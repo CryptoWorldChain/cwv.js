@@ -1,0 +1,52 @@
+{
+  "name": "cwv.js",
+  "version": "1.0.0",
+  "description": "CWV Chain JavaScript API & SDK",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CryptoWorldChain/cwv.js.git"
+  },
+  "keywords": [
+    "cwv",
+    "secp256r1"
+  ],
+  "author": "brew",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CryptoWorldChain/cwv.js/issues"
+  },
+  "homepage": "https://github.com/CryptoWorldChain/cwv.js#readme",
+  "devDependencies": {
+    "@webpack-cli/serve": "^0.1.2",
+    "bower": "^1.8.4",
+    "coveralls": "^3.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "jshint": "^2.9.7",
+    "mocha": "^5.2.0",
+    "sandboxed-module": "^2.0.3",
+    "terser-webpack-plugin": "^1.2.0",
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "bn.js": "^4.4.0",
+    "brorand": "^1.0.1",
+    "hmac-drbg": "^1.0.0",
+    "inherits": "^2.0.1",
+    "jssha": "^2.3.1",
+    "minimalistic-assert": "^1.0.0",
+    "minimalistic-crypto-utils": "^1.0.0",
+    "protobufjs": "^6.8.8",
+    "request": "^2.88.0",
+    "sha2": "^1.0.2",
+    "sha3": "^2.0.0",
+    "utf8": "^3.0.0"
+  }
+}
