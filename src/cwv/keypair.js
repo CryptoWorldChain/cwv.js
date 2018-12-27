@@ -15,6 +15,9 @@ function randomArray(length, max) {
         return Math.round(Math.random() * max);
     });
 }
+function reverts(strhex){
+	return Buffer.from(new Uint8Array(new Buffer(strhex,'hex')).reverse()).toString('hex');
+}
 
 export default class KeyPair {
 
@@ -28,23 +31,26 @@ export default class KeyPair {
 
 	static genFromPrikey(hexPrikey){
 		// var key = new ecc.ECKey(ecc.ECCurves.secp256r1, new Buffer(hexPrikey,'hex'));
-		var key = new ecc.ec('secp256r1').keyFromPrivate(hexPrikey);
+		console.log("hhll")
+		var reverseHexKey=reverts(hexPrikey);
+		console.log("reverseHexKey="+reverseHexKey); 
+		var key = new ecc.ec('secp256r1').keyFromPrivate(reverseHexKey);
 		return KeyPair.genFromECCKey(key);
 	}
 
-	static genFromPubkey(hexPubkey){
+	static genFromPubkey(hexPubkey){ 
 		
 		//extract xl;
 		var x = Buffer.from(new Uint8Array(new Buffer(hexPubkey.slice(0,64),'hex')).reverse());
-		// console.log("x=="+x.toString('hex'));
+		console.log("x=="+x.toString('hex'));
 		var y = Buffer.from(new Uint8Array(new Buffer(hexPubkey.slice(64,128),'hex')).reverse());
-		// console.log("y=="+y.toString('hex'));
+		console.log("y=="+y.toString('hex'));
 		var key = new ecc.ec('secp256r1').keyFromPublic({x:x,y:y});
 		return KeyPair.genFromECCKey(key);
 	}
 	static genFromECCKey(key){
 
-		var hexPrikey = key.getPrivate()?key.getPrivate().toString(16): NaN;
+		var hexPrikey = key.getPrivate()?reverts(key.getPrivate().toString(16)): NaN;
 		var hexPubkey = new Buffer(key.getPublic().getX().clone().toArray().reverse()).toString('hex').slice(0,64)
 		hexPubkey = hexPubkey + new Buffer(key.getPublic().getY().clone().toArray().reverse()).toString('hex').slice(0,64);
 		var hh=sha2.sha256(hexPubkey,'hex')
