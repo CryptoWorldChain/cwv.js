@@ -32,8 +32,6 @@ function KeyPair(ec, options) {
 
   if(this.priv){
     bkey = this.priv.toArray('be', 32);
-  }else if(this.pub){
-    bkey = this.pub.toArray('be', 32);
   }else{
     bkey = randomArray(32,32);
   }
