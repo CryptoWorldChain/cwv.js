@@ -7,8 +7,11 @@ import HmacDRBG from 'hmac-drbg';
 
 import sha2 from 'sha2'
 
-window.ecc=ecc;
-window.sha2=sha2;
+// window.ecc=ecc;
+// window.sha2=sha2;
+import utils from './utils';
+
+
 
 function randomArray(length, max) {
     return Array.apply(null, Array(length)).map(function() {
@@ -16,10 +19,15 @@ function randomArray(length, max) {
     });
 }
 function reverts(strhex){
-	return Buffer.from(new Uint8Array(new Buffer(strhex,'hex')).reverse()).toString('hex');
+	if(strhex.length%2 != 0){
+		// console.log("padding:len="+strhex.length+",str="+strhex)
+		strhex = '0'+strhex
+	}
+	 var arr=new Uint8Array(new Buffer(strhex,'hex')).reverse()
+	 return utils.toHex(arr);
 }
 
-export default class KeyPair {
+export default class KeyPair { 
 
 	constructor(pri,pub,addr,eckey){
 		this.hexPrikey = pri;
@@ -31,9 +39,9 @@ export default class KeyPair {
 
 	static genFromPrikey(hexPrikey){
 		// var key = new ecc.ECKey(ecc.ECCurves.secp256r1, new Buffer(hexPrikey,'hex'));
-		console.log("hhll")
+		// console.log("genFromPrikey")
 		var reverseHexKey=reverts(hexPrikey);
-		console.log("reverseHexKey="+reverseHexKey); 
+		// console.log("reverseHexKey="+reverseHexKey); 
 		var key = new ecc.ec('secp256r1').keyFromPrivate(reverseHexKey);
 		return KeyPair.genFromECCKey(key);
 	}
@@ -49,7 +57,7 @@ export default class KeyPair {
 		return KeyPair.genFromECCKey(key);
 	}
 	static genFromECCKey(key){
-
+		// console.log("genFromECCKey;key="+key)
 		var hexPrikey = key.getPrivate()?reverts(key.getPrivate().toString(16)): NaN;
 		var hexPubkey = new Buffer(key.getPublic().getX().clone().toArray().reverse()).toString('hex').slice(0,64)
 		hexPubkey = hexPubkey + new Buffer(key.getPublic().getY().clone().toArray().reverse()).toString('hex').slice(0,64);
@@ -61,8 +69,8 @@ export default class KeyPair {
 
 
 //生成随机密钥对
-	static genRandomKey(){
-		var key = new ecc.ec('secp256r1').genKeyPair();
+	static genRandomKey(options){
+		var key = new ecc.ec('secp256r1').genKeyPair(options);
 		return KeyPair.genFromECCKey(key);
 	}
 //数据签名

@@ -7,6 +7,7 @@ var assert = utils.assert;
 var HmacDRBG = require('hmac-drbg');
 
 function randomArray(length, max) {
+
     return Array.apply(null, Array(length)).map(function() {
         return Math.round(Math.random() * max);
     });
@@ -43,7 +44,7 @@ function KeyPair(ec, options) {
   this.drbg = new HmacDRBG({
     hash: ec.hash,
     entropy: bkey,
-    nonce: nonce,
+    nonce: nonce
   });
 
 }
