@@ -7,4 +7,6 @@ export default {
 
 	net_type:"testnet",
 
+	server_base:"http://localhost:9001/fbs",
+
 }

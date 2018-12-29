@@ -4,7 +4,7 @@ var ecc = exports;
 
 ecc.version = require('./package.json').version;
 ecc.utils = require('./utils');
-ecc.rand = require('randomatic');
+ecc.rand = ecc.utils.randomArray;
 ecc.curve = require('./curve');
 ecc.curves = require('./curves');
 

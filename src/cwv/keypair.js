@@ -13,11 +13,7 @@ import utils from './utils';
 
 
 
-function randomArray(length, max) {
-    return Array.apply(null, Array(length)).map(function() {
-        return Math.round(Math.random() * max);
-    });
-}
+
 function reverts(strhex){
 	if(strhex.length%2 != 0){
 		// console.log("padding:len="+strhex.length+",str="+strhex)
@@ -78,7 +74,7 @@ export default class KeyPair {
 		var sc=sha2.sha256(hexMsg,'hex');
 		var s = this._ecKey.sign(sc);
 		var result = this.hexPubkey;
-		result+= new Buffer(randomArray(20,20)).toString('hex')
+		result+= new Buffer(utils.randomArray(20)).toString('hex')
 		result+= new Buffer(s.r.clone().toArray().reverse()).toString('hex').slice(0,64);
 		result+= new Buffer(s.s.clone().toArray().reverse()).toString('hex').slice(0,64);
 		return result;

@@ -6,9 +6,19 @@ import sha2 from 'sha2'
 
 import sha3 from 'sha3'
 
+import Method from './method.js'
+
 
 var __toArray = function(hexstr){
 	return crptoutils.toArray(hexstr,'hex');
+}
+
+
+function __randomArray(length, max) {
+	var rmax = max || 256;
+    return Array.apply(null, Array(length)).map(function() {
+        return Math.round(Math.random() * rmax);
+    });
 }
 
 export default{
@@ -18,4 +28,5 @@ export default{
 	pbkdf2:pbkdf2,
 	sha2:sha2,
 	sha3:sha3,
+	randomArray:__randomArray,
 }

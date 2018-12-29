@@ -51,8 +51,17 @@ module.exports = {
     	filename: 'cwvbundle.js',
     	path: path.resolve(__dirname, 'dist'),
     	library:'cwv',
+    	libraryTarget:'commonjs',
     	libraryExport:'default'
   	},
+  	node: {
+		    console: 'mock',
+		    fs: 'empty',
+		    net: 'empty',
+		    tls: 'empty'
+		},
+	
+
   	plugins: [new HtmlWebpackPlugin(),
 
 
@@ -67,6 +76,6 @@ module.exports = {
 
 
 
-  	]
+  	],
 
 };
