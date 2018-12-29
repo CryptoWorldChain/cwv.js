@@ -25,7 +25,7 @@ module.exports = {
 	      {//load keystore
 	        test: /\.(json)$/,
 	        include:[path.resolve(__dirname, "keystore")],
-	       	loader: 'file-loader',
+	       	loader: 'json-loader',
             options: {
             	outputPath:'keystore'
             }
@@ -42,7 +42,10 @@ module.exports = {
 	    ],
 	 },
 	resolve: {//import的时候不需要加上js
-   		 extensions: ['.wasm', '.mjs', '.js', '.json']
+   		 extensions: ['.wasm', '.mjs', '.js', '.json'],
+   		 alias:{
+   		 	Keystore: path.resolve(__dirname, 'keystore'),
+   		 }
   	},
   	output: {
     	filename: 'cwvbundle.js',

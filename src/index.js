@@ -15,7 +15,7 @@ export default {
    protos:Protos,
    keystore:keystore,
    utils:utils,
-   config:config
-
+   config:config,
+   Buffer:Buffer
 };
 
