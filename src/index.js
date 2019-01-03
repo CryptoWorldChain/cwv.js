@@ -9,8 +9,7 @@ import keystore	from "./cwv/keystore.js"
 import config	from "./cwv/config.js"
 import utils	from "./cwv/utils.js"
 import httprpc 	from  './cwv/httprpc'
-import bocha 	from  './bocha/bocha'
-
+// import bocha 	from  './bocha/bocha'
 
 const VERSION = "v1.0.0";
 
@@ -23,6 +22,6 @@ export default {
    	config:config,
    	Buffer:Buffer,
    	rpc:httprpc,
-   	bocha:bocha
+   	// bocha:bocha
 };
 

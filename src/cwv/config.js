@@ -9,4 +9,5 @@ export default {
 
 	server_base:"http://localhost:9001/fbs",
 
+	store_path:"store",
 }
