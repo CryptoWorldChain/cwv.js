@@ -47,7 +47,7 @@ var getBlockByHash = PatternMethod._(_.template('{"hash":<%- opt[0] %>}'),"bct",
 var getTransaction = PatternMethod._(_.template('{"hash":<%- opt[0] %>}'),"TXT","GTX");
 var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- opt %>}'),"TXT","MTX");
 
-// getBlockTransactionCount,
+// 		   getBlockTransactionCount,
 //         getBlockUncleCount,
 //         getTransaction,
 //         getTransactionFromBlock,

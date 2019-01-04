@@ -48,10 +48,10 @@ module.exports = {
    		 }
   	},
   	output: {
-    	filename: 'cwvbundle.js',
+    	filename: 'cwv.js',
     	path: path.resolve(__dirname, 'dist'),
     	library:'cwv',
-    	// libraryTarget:'commonjs',
+    	libraryTarget:'commonjs',
     	libraryExport:'default'
   	},
   	node: {
