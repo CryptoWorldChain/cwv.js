@@ -19,19 +19,21 @@ class PatternMethod extends Method{
 		var uri = "/"+mod+"/pb"+cmd+".do";
 		return new PatternMethod(pattern,uri.toLowerCase());
 	}
-	request(args){
+	request(args,opts){
 		var content;
+		opts = opts||{};
 		if(args.constructor.name=="String")
 		{
-			content=this.pattern({'opt':[args]})
+			content=this.pattern({'args':[args]})
 		}else{
-			content=this.pattern({'opt':args})
+			content=this.pattern({'args':args})
 		}
 		console.log("content="+content);
 		// return utils.reqMan.request(this,content);
-		console.log("request==>"+config.server_base+this.uri+",data="+content);
+		var baseUrl = opts.server_base || global.server_base || config.server_base;
+		console.log("request==>"+baseUrl+this.uri+",data="+content);
 		return mockrp({
-			baseUrl:config.server_base,
+			baseUrl: baseUrl,
 			uri:this.uri,
 			method:'POST',
 			body: content,
@@ -41,11 +43,11 @@ class PatternMethod extends Method{
 
 }
 
-var getBlockByNumber = PatternMethod._(_.template('{"number":<%- opt[0] %>}'),"/bct/pbgbn.do");
-var getBalance = PatternMethod._(_.template('{"address":<%- opt[0] %>}'),"act","gac");
-var getBlockByHash = PatternMethod._(_.template('{"hash":<%- opt[0] %>}'),"bct","GBA");
-var getTransaction = PatternMethod._(_.template('{"hash":<%- opt[0] %>}'),"TXT","GTX");
-var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- opt %>}'),"TXT","MTX");
+var getBlockByNumber = PatternMethod._(_.template('{"number":<%- args[0] %>}'),"/bct/pbgbn.do");
+var getBalance = PatternMethod._(_.template('{"address":<%- args[0] %>}'),"act","gac");
+var getBlockByHash = PatternMethod._(_.template('{"hash":<%- args[0] %>}'),"bct","GBA");
+var getTransaction = PatternMethod._(_.template('{"hash":<%- args[0] %>}'),"TXT","GTX");
+var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- args %>}'),"TXT","MTX");
 
 // 		   getBlockTransactionCount,
 //         getBlockUncleCount,
@@ -66,10 +68,10 @@ var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- opt %>}'
 export default{
 	setMockRequest:function(rp){ mockrp = rp; return mockrp;},
 
-	getBalance:function(args){ return getBalance.request(args);},
-	getBlockByNumber:function(args){ return getBlockByNumber.request(args);},
-	getBlockByHash:function(args){ return getBlockByHash.request(args);},
-	getTransaction:function(args){ return getTransaction.request(args);},
-	sendRawTransaction:function(args){ return sendRawTransaction.request(args);},
+	getBalance:function(args,opts){ return getBalance.request(args,opts);},
+	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
+	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
+	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
+	sendRawTransaction:function(args,opts){ return sendRawTransaction.request(args,opts);},
 	
 }

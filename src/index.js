@@ -22,6 +22,7 @@ export default {
    	config:config,
    	Buffer:Buffer,
    	rpc:httprpc,
+   	getBalance:httprpc.getBalance
    	// bocha:bocha
 };
 
