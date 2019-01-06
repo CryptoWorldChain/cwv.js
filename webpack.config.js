@@ -56,7 +56,7 @@ module.exports = {
     	filename: 'cwv.js',
     	path: path.resolve(__dirname, 'dist'),
     	library:'cwv',
-    	// libraryTarget:'commonjs',
+    	libraryTarget:'commonjs2',
     	libraryExport:'default'
   	},
   	node: {

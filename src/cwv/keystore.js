@@ -66,7 +66,7 @@ var self={
 			var pkcs5_passwd=utils.toHex(hashpasswd.split('').map(x=>x.charCodeAt(0)))
 
 
-			var derivedKey = pbkdfmd5(cwv.Buffer.from(pkcs5_passwd,'hex'), salt, 32);
+			var derivedKey = pbkdfmd5(Buffer.from(pkcs5_passwd,'hex'), salt, 32);
 			var aesCbc = new aesjs.ModeOfOperation.cbc(Buffer.from(derivedKey,'hex'),iv);
 			var result=aesCbc.decrypt(encryptedBytes).slice(0,ksJSON.params.l);
 			// console.log("get result:"+utils.toHex(result));
@@ -108,7 +108,7 @@ var self={
 
 		var pkcs5_passwd=utils.toHex(hashpasswd.split('').map(x=>x.charCodeAt(0)));
 
-		var derivedKey = pbkdfmd5(cwv.Buffer.from(pkcs5_passwd,'hex'), salt, 48);
+		var derivedKey = pbkdfmd5(Buffer.from(pkcs5_passwd,'hex'), salt, 48);
 		console.log("derivedKey="+derivedKey);
 		var iv=Buffer.from(derivedKey.slice(64,96),'hex');	
 		console.log("derivedKey="+derivedKey.slice(0,64)+",iv="+derivedKey.slice(64,96));
@@ -137,22 +137,15 @@ var self={
 		console.log("enc result:"+JSON.stringify(jsResult));
 		return jsResult;
 	},
-	test:function(){
+	json2KeyPair:function(jsonTxt,password){
 		const KeyStoreValue = proto.load('KeyStoreValue')
 
-		var decryptret = self.parse(testnet_keystore1,'000000');
+		var decryptret = self.parse(jsonTxt,password);
 		var ks = KeyStoreValue.decode(decryptret);
 
 		if(ks){
 			// console.log("address=="+ks.address);
 			var kps= KeyPair.genFromPrikey(ks.prikey);
-			var savejson = self.exportJSON(kps,"000000");
-
-			var decryptret2=self.parse(savejson,"000000");
-			var ks2=KeyStoreValue.decode(decryptret2);
-			console.log("prikey.equal=="+(ks2.hexPrikey==ks.hexPrikey))
-			console.log("ks2=="+ks2);
-
 			return kps;
 		}else{
 			console.log("ks not found");
