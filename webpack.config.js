@@ -31,12 +31,17 @@ module.exports = {
             }
 	      },
 	      {
-	        test: /\.(png|jpg|gif|proto)$/,
+	        test: /\.(png|jpg|gif)$/,
 	       	loader: 'file-loader',
-	       	include:[path.resolve(__dirname, "src/cwv/proto")],
+	       	include:[path.resolve(__dirname)],
             options: {
             	outputPath:'pbs'
             }
+	      },
+	      {
+	        test: /\.(proto)$/,
+	       	loader: 'raw-loader',
+	       	include:[path.resolve(__dirname, "src/cwv/proto")],
 	      },
 	      
 	    ],
@@ -51,7 +56,7 @@ module.exports = {
     	filename: 'cwv.js',
     	path: path.resolve(__dirname, 'dist'),
     	library:'cwv',
-    	libraryTarget:'commonjs',
+    	// libraryTarget:'commonjs',
     	libraryExport:'default'
   	},
   	node: {

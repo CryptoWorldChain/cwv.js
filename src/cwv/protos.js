@@ -1,5 +1,5 @@
 
-import { load } from "protobufjs"; // respectively "./node_modules/protobufjs"
+import { load,parse } from "protobufjs"; // respectively "./node_modules/protobufjs"
 
 var __pbfiles = require.context("./proto/", true, /\.proto$/);
 
@@ -32,9 +32,13 @@ class PBLoader {
 		var _rbt = this.rootByType;
 		__pbfiles.keys().forEach(function (key) {
 		 	// console.log(`get pbfile:`+key+",=="+pbfiles(key))
+
 		 	try{
-		 	load(__pbfiles(key), function(err, root) {
-				if(root){
+		 		var source = __pbfiles(key);
+		 		var ret=parse(source);
+		 	// load(__pbfiles(key), function(err, root) {
+				if(ret&&ret.root){
+					var root=ret.root;
 					// console.log(`load == ${JSON.stringify(root)} ,err=${err}`);
 					var ret=nestedLoad(root,"");
 					// console.log("llo==."+ret)
@@ -44,7 +48,8 @@ class PBLoader {
 						Types.push(ret[id]);
 					}
 				}
-			})}catch(err){
+			// }
+		 }catch(err){
 		 		console.log("get error:"+err);
 			}
 
@@ -92,5 +97,7 @@ var __loadType = function(name){
 export default {
 	Types:Types,
 	pbloader:pbloader,
-	load:__loadType
+	load:__loadType,
+	parse:parse,
+	pbfiles:__pbfiles
 }
