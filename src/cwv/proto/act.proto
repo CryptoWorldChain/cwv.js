@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.csc.evmapi.gens;
+package org.brewchain.evmapi.gens;
 
 message Account {
 	bytes address = 1;

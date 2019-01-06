@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.csc.account.gens;
+package org.brewchain.account.gens;
 
 enum PTXTModule {
     TXT = 0; // 交易

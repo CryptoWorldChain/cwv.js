@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package org.csc.evmapi.gens;
+
+message MultiTransaction {
+	string txHash = 1;
+	MultiTransactionBody txBody = 2;
+	string status = 3;
+	MultiTransactionNode txNode = 4;
+	bytes result = 5;
+} 
+
+message MultiTransactionBody {
+	repeated MultiTransactionInput inputs = 1;
+	repeated MultiTransactionOutput outputs = 2;
+	bytes exdata = 3;
+	repeated MultiTransactionSignature signatures = 4;
+	repeated bytes delegate = 5;
+	bytes data = 6;
+	int64 timestamp = 7;
+	int32 type = 8;
+}
+
+message MultiTransactionInput {
+	int32 nonce = 1;
+	bytes address = 4;
+	bytes amount= 5;
+	string token = 7;
+	string symbol = 8;
+	bytes cryptoToken = 9;
+}
+
+message MultiTransactionOutput {
+	bytes address= 1;
+	bytes amount= 2;
+	string symbol = 3;
+	bytes cryptoToken = 4;
+}
+
+message MultiTransactionSignature {
+	bytes signature = 1;
+}
+
+message MultiTransactionNode {
+	string node = 1;
+	bytes address = 2;
+	string bcuid = 3;
+}
+
+message BroadcastTransactionMsg {
+	//repeated string txHexStr = 1;
+	repeated bytes txHash = 1;
+	repeated bytes txDatas = 2;
+}
+
+message CryptoTokenData {
+	int64 total = 1;
+	string symbol = 2;
+	bytes extData = 3;
+	repeated string name = 4;
+	repeated string code = 5;	
+}
+
+message UnionAccountData {
+	bytes max = 1;
+    bytes acceptMax = 2;
+    int32 acceptLimit = 3;
+    repeated bytes address = 4;
+}
+
+message SanctionData {
+	bytes content = 1;
+	int64 endBlockHeight = 2;
+	bytes result = 3;
+}

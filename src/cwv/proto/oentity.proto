@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package org.brewchain.bcapi.gens;
 
-
 message OKey{
 	bytes data  = 1;
 }

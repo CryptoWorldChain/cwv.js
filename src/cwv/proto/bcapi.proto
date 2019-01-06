@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.csc.bcapi.version.gens;
+package org.brewchain.bcapi.version.gens;
 
 enum PModule {
 	BCA = 0;

@@ -3,6 +3,7 @@ import 	_ from 'lodash'
 import utils from './utils';
 // import rp from 'request-promise';
 import config	from "./config.js"
+import transaction	from "./transaction.js"
 
 // var mockrp = rp;
 
@@ -75,6 +76,12 @@ export default{
 	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
 	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
 	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
-	sendRawTransaction:function(args,opts){ return sendRawTransaction.request(args,opts);},
+	sendRawTransaction:function(args,opts){
+		//TODO 应该获取服务端nonce 
+		args.nonce=1;
+		let trans=new Transaction(args);
+
+		return sendRawTransaction.request(trans.getBody(),opts);
+	},
 	
 }

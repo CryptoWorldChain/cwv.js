@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "tx.proto";
-package org.csc.evmapi.gens;
+package org.brewchain.evmapi.gens;
 
 message BlockEntity {
 	BlockHeader header = 1;

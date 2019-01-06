@@ -30,8 +30,6 @@ class Account  {
 
 export default{
 
-
-
 }
 
 

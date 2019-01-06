@@ -28,5 +28,5 @@ export default{
 	pbkdf2:pbkdf2,
 	sha2:sha2,
 	sha3:sha3,
-	randomArray:__randomArray,
+	randomArray:__randomArray
 }

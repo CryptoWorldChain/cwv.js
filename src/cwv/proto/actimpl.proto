@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-package org.csc.account.gens;
+package org.brewchain.account.gens;
 
 enum PACTModule {
 	ACT = 0; // 账户，合约，合约代码
 };
+
 
 enum PACTCommand {
 	GAC = 0; // 获取单个账户
