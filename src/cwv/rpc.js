@@ -38,8 +38,8 @@ class PatternMethod extends Method{
 				baseUrl: baseUrl,
 				uri:this.uri,
 				method:'POST',
-				body: content,
-				json:true
+				body: content
+				//json:false
 			})
 		}else{
 			return NaN;
