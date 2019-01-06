@@ -48,10 +48,10 @@ class PatternMethod extends Method{
 
 }
 
-var getBlockByNumber = PatternMethod._(_.template('{"number":<%- args[0] %>}'),"/bct/pbgbn.do");
-var getBalance = PatternMethod._(_.template('{"address":<%- args[0] %>}'),"act","gac");
-var getBlockByHash = PatternMethod._(_.template('{"hash":<%- args[0] %>}'),"bct","GBA");
-var getTransaction = PatternMethod._(_.template('{"hash":<%- args[0] %>}'),"TXT","GTX");
+var getBlockByNumber = PatternMethod._(_.template('{"number":"<%- args[0] %>"}'),"/bct/pbgbn.do");
+var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","gac");
+var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>}"'),"bct","GBA");
+var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>}"'),"TXT","GTX");
 var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- args %>}'),"TXT","MTX");
 
 // 		   getBlockTransactionCount,
