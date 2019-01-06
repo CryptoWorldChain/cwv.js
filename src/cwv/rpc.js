@@ -1,10 +1,10 @@
 import Method from './method.js'
 import 	_ from 'lodash'
 import utils from './utils';
-import rp from 'request-promise';
+// import rp from 'request-promise';
 import config	from "./config.js"
 
-var mockrp = rp;
+// var mockrp = rp;
 
 class PatternMethod extends Method{
 	constructor(pattern,uri){
@@ -31,14 +31,19 @@ class PatternMethod extends Method{
 		console.log("content="+content);
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
+		var rpcprovider = config.rpc_provider;
 		console.log("request==>"+baseUrl+this.uri+",data="+content);
-		return mockrp({
-			baseUrl: baseUrl,
-			uri:this.uri,
-			method:'POST',
-			body: content,
-			json:true
-		})
+		if(rpcprovider){
+			return rpcprovider({
+				baseUrl: baseUrl,
+				uri:this.uri,
+				method:'POST',
+				body: content,
+				json:true
+			})
+		}else{
+			return NaN;
+		}
 	}
 
 }
@@ -66,8 +71,6 @@ var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- args %>}
 //         getWork
 
 export default{
-	setMockRequest:function(rp){ mockrp = rp; return mockrp;},
-
 	getBalance:function(args,opts){ return getBalance.request(args,opts);},
 	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
 	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
