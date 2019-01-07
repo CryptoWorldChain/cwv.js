@@ -25,14 +25,21 @@ function reverts(strhex){
 
 export default class KeyPair { 
 
-	constructor(pri,pub,addr,eckey){
+	constructor(pri,pub,addr,eckey,nonce){
 		this.hexPrikey = pri;
 		this.hexPubkey = pub;
 		this.hexAddress = addr;
 		this._ecKey = eckey;
-		this.nonce = 0;
+		this.nonce = nonce||0;
+		this.keystore_pwd = NaN;
+		this.keystore_filename = NaN;
 	}
-
+	setKeyStorePwd(pwd){
+		this.keystore_pwd = pwd;
+	}
+	setKeyStoreFileName(filename){
+		this.keystore_filename = filename;
+	}
 	static genFromPrikey(hexPrikey){
 		// var key = new ecc.ECKey(ecc.ECCurves.secp256r1, new Buffer(hexPrikey,'hex'));
 		// console.log("genFromPrikey")
@@ -74,7 +81,7 @@ export default class KeyPair {
 		var sc=sha2.sha256(hexMsg,'hex');
 		var s = this._ecKey.sign(sc);
 		var result = this.hexPubkey;
-		result+= new Buffer(utils.randomArray(20)).toString('hex')
+		result+= this.hexAddress;//new Buffer(utils.randomArray(20)).toString('hex')
 		result+= new Buffer(s.r.clone().toArray().reverse()).toString('hex').slice(0,64);
 		result+= new Buffer(s.s.clone().toArray().reverse()).toString('hex').slice(0,64);
 		return result;

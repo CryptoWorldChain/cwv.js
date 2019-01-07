@@ -27,9 +27,9 @@ class PatternMethod extends Method{
 		{
 			content=this.pattern({'args':[args]})
 		}else{
-			content=this.pattern({'args':args})
+			content=JSON.stringify(args);
 		}
-		console.log("content="+content);
+		// console.log("content="+content);
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
@@ -55,7 +55,7 @@ var getBlockByNumber = PatternMethod._(_.template('{"number":"<%- args[0] %>"}')
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","gac");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>}"'),"bct","GBA");
 var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>}"'),"TXT","GTX");
-var sendRawTransaction = PatternMethod._(_.template('{"transaction":<%- args %>}'),"TXT","MTX");
+var sendRawTransaction = PatternMethod._(_.template('""'),"TXT","MTX");
 
 // 		   getBlockTransactionCount,
 //         getBlockUncleCount,

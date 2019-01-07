@@ -26,4 +26,5 @@ message KeyStoreValue {
     string bcuid = 2;
     string prikey = 3;
     string pubkey = 4;
+    int32	nonce = 5;//新增
 }

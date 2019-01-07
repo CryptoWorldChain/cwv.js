@@ -94,12 +94,16 @@ var self={
 	exportJSON:function(kp,passwd){
 		const KeyStoreValue = proto.load('KeyStoreValue')
 
-		var  ks = KeyStoreValue.create({address:kp.hexAddress,prikey:kp.hexPrikey,pubkey:kp.hexPubkey});
+		var  ks = KeyStoreValue.create(
+			{address:kp.hexAddress,prikey:kp.hexPrikey,pubkey:kp.hexPubkey,
+				nonce:kp.nonce
+			});
  		let  data = Buffer.from(KeyStoreValue.encode(ks).finish());
 
 		var salt=Buffer.from(utils.randomArray(8));
 
 		var hash=sha3(256);
+		passwd = passwd || kp.keystore_pwd
 		hash.update(Buffer.from(passwd));
 
 		var hashpasswd=utils.toHex(hash.digest());
@@ -109,9 +113,9 @@ var self={
 		var pkcs5_passwd=utils.toHex(hashpasswd.split('').map(x=>x.charCodeAt(0)));
 
 		var derivedKey = pbkdfmd5(Buffer.from(pkcs5_passwd,'hex'), salt, 48);
-		console.log("derivedKey="+derivedKey);
+		// console.log("derivedKey="+derivedKey);
 		var iv=Buffer.from(derivedKey.slice(64,96),'hex');	
-		console.log("derivedKey="+derivedKey.slice(0,64)+",iv="+derivedKey.slice(64,96));
+		// console.log("derivedKey="+derivedKey.slice(0,64)+",iv="+derivedKey.slice(64,96));
 		var aesCbc = new aesjs.ModeOfOperation.cbc(Buffer.from(derivedKey.slice(0,64),'hex'),iv);
 
 
@@ -134,7 +138,7 @@ var self={
 			  "cipherText": utils.toHex(encryptData)
 			}
 		;
-		console.log("enc result:"+JSON.stringify(jsResult));
+		// console.log("enc result:"+JSON.stringify(jsResult));
 		return jsResult;
 	},
 	json2KeyPair:function(jsonTxt,password){
@@ -146,30 +150,15 @@ var self={
 		if(ks){
 			// console.log("address=="+ks.address);
 			var kps= KeyPair.genFromPrikey(ks.prikey);
+			if(ks.nonce>0){
+				kps.setNonce(ks.nonce);
+			}
+			kps.setKeyStorePwd(password);
 			return kps;
 		}else{
 			console.log("ks not found");
 			return NaN;
 		}
-		// console.log("ks=="+JSON.stringify(ks));
-
-
-		// console.log("keystore=="+KeyStoreValue+",path="+config.keystore_path);
-		// var  	ks=KeyStoreValue.create({address:"0002232",prikey:'aaabb',pubkey:'test'});
-		// console.log(`ks = ${JSON.stringify(ks)}`);
-		// let buffer = KeyStoreValue.encode(ks).finish();
-		// console.log(`buffer = ${Array.prototype.toString.call(buffer)}`);
-
-		// console.log("ks=="+testnet_keystore1.pwd);
-
-
-
-
-		// utils.loadJsonFile("keystore/"+config.net_type+"/keystore1.json").then(json => {
-		//     console.log("file lod ok:"+json);
-		//     //=> {foo: true}
-		// });
-
 	}
 
 }
