@@ -68,7 +68,7 @@ export default class NormalTransaction extends Transaction {
 		txbody.inputs.push(inputs.create({
 			address:Buffer.from(this.args.from),
 			nonce: keypair.nonce,
-			amount:Buffer.from(this.args.amount),
+			amount:this.args.amount,
 		}))
 		jsonBody.inputs.push({
 				"nonce": keypair.nonce,
@@ -79,7 +79,7 @@ export default class NormalTransaction extends Transaction {
 		let outputs = proto.load('MultiTransactionOutput');
 		txbody.outputs.push(outputs.create({
 			address:Buffer.from(this.args.to),
-			amount:Buffer.from(this.args.amount)
+			amount:this.args.amount
 		}))
 		jsonBody.outputs=[];
 		jsonBody.outputs.push({
@@ -89,8 +89,8 @@ export default class NormalTransaction extends Transaction {
 
 		
 
-		let  ecdata = Buffer.from(multiTransactionBody.encode(ks).finish())
-		var signdata = keypair.ecHexSign(ecdata.toString(16));
+		let  ecdata = Buffer.from(multiTransactionBody.encode(txbody).finish())
+		var signdata = keypair.ecHexSign(ecdata.toString('hex'));
 		console.log("signdata=="+signdata);
 		// txbody.signatures.push(keypair.ecHexSign(ecdata.toString(16)));
 		jsonBody.signatures=[];
