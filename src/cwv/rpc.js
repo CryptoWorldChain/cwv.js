@@ -3,9 +3,11 @@ import 	_ from 'lodash'
 import utils from './utils';
 // import rp from 'request-promise';
 import config	from "./config.js"
-import NormalTransaction	from "./transaction.js"
+import MTxTransaction	from "./transaction.js"
 import KeyPair from "./keypair";
 // var mockrp = rp;
+import enums from "./enums.js"
+
 
 class PatternMethod extends Method{
 	constructor(pattern,uri){
@@ -73,12 +75,7 @@ var sendRawTransaction = PatternMethod._(_.template('""'),"TXT","MTX");
 //         getLogs,
 //         getWork
 
-export default{
-	getBalance:function(args,opts){ return getBalance.request(args,opts);},
-	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
-	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
-	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
-	transfer:function(toAddr,amount,opts){
+var __sendTxTransaction = function(txtype,toAddr,amount,opts){
 		//发送交易
 		opts = opts || {};
 		var from = opts.from;
@@ -95,15 +92,17 @@ export default{
 		}
 		opts.to = toAddr;
 		opts.amount = amount;
-		let trans=new NormalTransaction(opts);
+		let trans=new MTxTransaction(txtype,opts);
 		return sendRawTransaction.request(trans.genBody(),opts);
-	},
-	// sendRawTransaction:function(args,opts){
-	// 	//TODO 应该获取服务端nonce ,nonce是本地控制的
-	// 	args.nonce=1;
-	// 	let trans=new NormalTransaction(args);
+};
 
-	// 	return sendRawTransaction.request(trans.getBody(),opts);
-	// },
-	
+export default{
+	getBalance:function(args,opts){ return getBalance.request(args,opts);},
+	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
+	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
+	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
+	transfer:function(toAddr,amount,opts){
+		return __sendTxTransaction(enums.TYPE_DEFAULT,toAddr,amount,opts);
+	},
+	sendTxTransaction: __sendTxTransaction,
 }

@@ -39,14 +39,15 @@ import BN from 'bn.js';
 	}
 }
 
-export default class NormalTransaction extends Transaction {
-	constructor(args) {
+export default class MTxTransaction extends Transaction {
+	constructor(txtype,args) {
 		// code
 		super(args);
+		this.txtype=txtype;
 	}
 
 	getType(){
-		return enums.TYPE_DEFAULT;
+		return this.txtype;
 	}
 
 	genBody(){
@@ -64,14 +65,13 @@ export default class NormalTransaction extends Transaction {
 		};
 
 		if(this.args.data){
-			txbody.data = Buffer.from(this.args.data)
+			txbody.data = Buffer.from(this.args.data,'hex')
 			jsonBody['data'] = this.args.data
 		}
 		if(this.args.exdata){
-			txbody.exdata = Buffer.from(this.args.exdata)
+			txbody.exdata = Buffer.from(this.args.exdata,'hex')
 			jsonBody['exdata'] = this.args.exdata
-		}
-		
+		}	
 
 		let inputs = proto.load('MultiTransactionInput');
 		jsonBody.inputs=[];
