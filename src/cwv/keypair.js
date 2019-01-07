@@ -30,7 +30,7 @@ export default class KeyPair {
 		this.hexPubkey = pub;
 		this.hexAddress = addr;
 		this._ecKey = eckey;
-		
+		this.nonce = 0;
 	}
 
 	static genFromPrikey(hexPrikey){
@@ -80,7 +80,12 @@ export default class KeyPair {
 		return result;
 	}
 
-
+	setNonce(nonce){
+		this.nonce = nonce;
+	}
+	increNonce(){
+		this.nonce = this.nonce+1;
+	}
 //验证签名
 	static ecHexVerify(hexMsg,hexSig){
 		var hh=sha2.sha256(hexMsg,'hex').toString('hex');
