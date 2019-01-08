@@ -46,23 +46,34 @@ export default class MTxTransaction extends Transaction {
 		this.txtype=txtype;
 	}
 
-	getType(){
-		return this.txtype;
-	}
 
 	genBody(){
 		//let MultiTransaction = proto.load('MultiTransaction');
 		let MultiTransactionBody = proto.load('MultiTransactionBody');
-		let txbody=MultiTransactionBody.create()
+		var txbody = NaN;
 		let keypair = this.args.keypair;
 		let timestamp = new Date().getTime();
-		txbody.timestamp = timestamp
-		txbody.type = this.getType();
+		if(this.txtype>0)
+		{
+			// console.log("create.type=="+this.txtype)
+			txbody = MultiTransactionBody.create({
+				timestamp:timestamp,
+				'type':Number.parseInt(this.txtype)
+			})
+			// console.log(txbody.type);
+		}else{
+			txbody = MultiTransactionBody.create({
+				timestamp:timestamp,
+			})
+		}
 
 		var jsonBody = {
 			"timestamp":timestamp,
-			"type":this.getType()
+			"type":this.txtype
 		};
+		
+
+		
 
 		if(this.args.data){
 			txbody.data = Buffer.from(this.args.data,'hex')
@@ -82,33 +93,47 @@ export default class MTxTransaction extends Transaction {
 				nonce: keypair.nonce,
 				amount: new BN(this.args.amount).toArrayLike(Buffer)
 			}))
+		
 		}
 		else{
 			txbody.inputs.push(inputs.create({
 				address:Buffer.from(this.removePrefix(this.args.from),'hex'),
 				// nonce: keypair.nonce,
 				amount: new BN(this.args.amount).toArrayLike(Buffer)
-			}))
+			}))	
 		}
 		jsonBody.inputs.push({
 				"nonce": keypair.nonce,
 				"address": this.removePrefix(this.args.from),
 				"amount": ""+this.args.amount
 		});
+		if(this.args.to){
+			jsonBody.outputs=[];
+			let MultiTransactionOutput = proto.load('MultiTransactionOutput');
+			if(this.args.amount>0){
+				txbody.outputs.push(MultiTransactionOutput.create({
+					address:Buffer.from(this.removePrefix(this.args.to),'hex'),
+					amount: new BN(this.args.amount).toArrayLike(Buffer)
+				}))
+			}else{
+				txbody.outputs.push(MultiTransactionOutput.create({
+					address:Buffer.from(this.removePrefix(this.args.to),'hex'),
+					amount: new BN(this.args.amount).toArrayLike(Buffer)
+				}))
 
-		let outputs = proto.load('MultiTransactionOutput');
-		txbody.outputs.push(outputs.create({
-			address:Buffer.from(this.removePrefix(this.args.to),'hex'),
-			amount: new BN(this.args.amount).toArrayLike(Buffer)
-		}))
-		jsonBody.outputs=[];
-		jsonBody.outputs.push({
-				"address": this.removePrefix(this.args.to),
-				"amount": ""+this.args.amount
-		});
+			}
+			jsonBody.outputs.push({
+					"address": this.removePrefix(this.args.to),
+					"amount": ""+this.args.amount
+			});
+
+		}
 
 		var  ecdata = Buffer.from(MultiTransactionBody.encode(txbody).finish())
-		ecdata = ecdata.slice(0,ecdata.length-2);//slice for java!!!
+		if(this.txtype==0)
+		{
+//			ecdata = ecdata.slice(0,ecdata.length-2);//slice for java!!!
+		}
 		// console.log("ecdata=="+ecdata.toString('hex'));
 		var signdata = keypair.ecHexSign(ecdata.toString('hex'));
 
