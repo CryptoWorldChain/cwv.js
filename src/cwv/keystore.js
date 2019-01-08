@@ -78,7 +78,7 @@ var self={
 	paddingData:function(data){
 		
 		var padlen = data.length/16*16;
-		if(data.length%2==0){
+		if(data.length%16==0){
 			return data;
 		}else{
 			var sizematch = (Math.floor(data.length/16)+1)*16;
