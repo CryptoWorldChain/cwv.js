@@ -28,7 +28,11 @@ class PatternMethod extends Method{
 		if(args.constructor.name=="String")
 		{
 			content=this.pattern({'args':[args]})
-		}else{
+		}else
+		if(args.constructor.name=="Array"){
+			content=this.pattern({'args':args})
+		}else
+			{
 			content=JSON.stringify(args);
 		}
 		// console.log("content="+content);
@@ -57,6 +61,7 @@ var getBlockByNumber = PatternMethod._(_.template('{"number":"<%- args[0] %>"}')
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","gac");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"bct","GBA");
 var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"TXT","GTX");
+var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'),"ACT","QAS");
 var sendRawTransaction = PatternMethod._(_.template('""'),"TXT","MTX");
 
 // 		   getBlockTransactionCount,
@@ -101,6 +106,8 @@ export default{
 	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
 	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
 	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
+	getStorageValue:function(args,opts){ return getStorageValue.request(args,opts);},
+	
 	transfer:function(toAddr,amount,opts){
 		return __sendTxTransaction(enums.TYPE_DEFAULT,toAddr,amount,opts);
 	},
