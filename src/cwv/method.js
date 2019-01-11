@@ -31,5 +31,13 @@ export default class Method {
 		}
 	}
 
+	removePrefix(addr){
+		if(addr.startsWith('0x')){
+			return addr.substring(2);
+		}else{
+			return addr;
+		}
+	}
+
 }
 

@@ -4,6 +4,7 @@ import utils from './utils';
 // import rp from 'request-promise';
 import config	from "./config.js"
 import MTxTransaction	from "./transaction.js"
+import crc20	from "./crc20.js"
 import KeyPair from "./keypair";
 // var mockrp = rp;
 import enums from "./enums.js"
@@ -79,28 +80,66 @@ var sendRawTransaction = PatternMethod._(_.template('""'),"TXT","MTX");
 //         submitWork,
 //         getLogs,
 //         getWork
-
+var validOpts=function(opts){
+	var keypair = opts.keypair;
+	var from = opts.from;
+	if(!from){
+		return new Promise((resolve, reject) => {
+			reject("cwv.rpc:from not set or type error:"+from);
+		});
+	}
+	if(!keypair){
+		return new Promise((resolve, reject) => {
+			reject("key pair not set")
+		});
+	}
+}
 var __sendTxTransaction = function(txtype,toAddr,amount,opts){
-		//发送交易
-		opts = opts || {};
-		var from = opts.from;
-		if(!from){
-			return new Promise((resolve, reject) => {
-				reject("cwv.rpc:from not set or type error:"+from);
-			});
-		}
-		var keypair = opts.keypair;
-		if(!keypair){
-			return new Promise((resolve, reject) => {
-				reject("key pair not set")
-			});
-		}
-		opts.to = toAddr;
-		opts.amount = amount;
-		let trans=new MTxTransaction(txtype,opts);
-		return sendRawTransaction.request(trans.genBody(),opts);
+	//发送交易
+	opts = opts || {};
+	var from = opts.from;
+	if(!from){
+		return new Promise((resolve, reject) => {
+			reject("cwv.rpc:from not set or type error:"+from);
+		});
+	}
+	var keypair = opts.keypair;
+	if(!keypair){
+		return new Promise((resolve, reject) => {
+			reject("key pair not set")
+		});
+	}
+	opts.to = toAddr;
+	opts.amount = amount;
+	let trans=new MTxTransaction(txtype,opts);
+	return sendRawTransaction.request(trans.genBody(),opts);
 };
-
+/**
+ * create crc token
+ * @param {*} token 
+ * @param {*} amount 
+ * @param {*} opt 
+ */
+var __createCRC20=function(args,opts){
+	validOpts()	
+	opts.token=args.token;
+	opts.amount=args.amount;
+	return sendRawTransaction.request(new CRC20(opts).create(),opts);
+}
+/**
+ * call crc20 
+ * @param {*} to 
+ * @param {*} token 
+ * @param {*} amount 
+ * @param {*} opts 
+ */
+var __callCRC20=function(args,opts){
+	validOpts()
+	opts.token=args.token;
+	opts.amount=args.amount;
+	opts.to=args.to;
+	return sendRawTransaction.request(new CRC20(opts).call(),opts);
+}	
 export default{
 	getBalance:function(args,opts){ return getBalance.request(args,opts);},
 	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
@@ -112,4 +151,6 @@ export default{
 		return __sendTxTransaction(enums.TYPE_DEFAULT,toAddr,amount,opts);
 	},
 	sendTxTransaction: __sendTxTransaction,
+	createCRC20:__createCRC20,
+	callCRC20:__callCRC20
 }
