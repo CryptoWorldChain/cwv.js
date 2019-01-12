@@ -4,7 +4,8 @@ import utils from './utils';
 // import rp from 'request-promise';
 import config	from "./config.js"
 import MTxTransaction	from "./transaction.js"
-import crc20	from "./crc20.js"
+import CRC20 from "./crc20.js"
+import CRC721 from "./crc721.js"
 import KeyPair from "./keypair";
 // var mockrp = rp;
 import enums from "./enums.js"
@@ -115,31 +116,74 @@ var __sendTxTransaction = function(txtype,toAddr,amount,opts){
 	return sendRawTransaction.request(trans.genBody(),opts);
 };
 /**
- * create crc token
- * @param {*} token 
- * @param {*} amount 
- * @param {*} opt 
+ * args={
+ * 	token:"",
+ * 	amount:"",
+ * }
+ * @param {*} args 
+ * @param {*} opts 
  */
 var __createCRC20=function(args,opts){
-	validOpts()	
+	validOpts(opts);	
 	opts.token=args.token;
 	opts.amount=args.amount;
-	return sendRawTransaction.request(new CRC20(opts).create(),opts);
+	let crc=new CRC20(opts);
+	return sendRawTransaction.request(crc.create(),opts);
 }
 /**
- * call crc20 
+ * args={
+ * 	token:'',amount:'',to:[{
+ * 		addr:'',amount''
+ * 	}]
+ * } 
  * @param {*} to 
  * @param {*} token 
  * @param {*} amount 
  * @param {*} opts 
  */
 var __callCRC20=function(args,opts){
-	validOpts()
+	validOpts(opts);
 	opts.token=args.token;
 	opts.amount=args.amount;
-	opts.to=args.to;
-	return sendRawTransaction.request(new CRC20(opts).call(),opts);
+	opts.txtype=enums.TYPE_TokenTransaction;
+	opts.to=Array.isArray(args.to)?args.to:[args.to];
+	let crc=new CRC20(opts);
+	return sendRawTransaction.request(crc.call(),opts);
 }	
+
+var __createCRC721=function(args,opts){
+	validOpts(opts);	
+	opts.symbol=args.symbol;
+	opts.exdata=args.exdata;
+	opts.names=args.names;
+	opts.txtype=enums.TYPE_CreateCryptoToken;
+
+	let crc=new CRC721(opts);
+	return sendRawTransaction.request(crc.create(),opts);
+}
+/**
+ * args={
+ * 	token:'',amount:'',symbol:'',cryptoToken:'',to:[{
+ * 		addr:'',amount'',symbol:'',cryptoToken:''
+ * 	}]
+ * } 
+ * @param {*} to 
+ * @param {*} token 
+ * @param {*} amount 
+ * @param {*} opts 
+ */
+var __callCRC721=function(args,opts){
+	validOpts(opts);
+	opts.amount=args.amount;
+	opts.txtype=enums.TYPE_TokenTransaction;
+	opts.symbol=args.symbol;
+	opts.cryptoToken=args.cryptoToken;
+
+	opts.to=Array.isArray(args.to)?args.to:[args.to];
+	let crc=new CRC721(opts);
+	return sendRawTransaction.request(crc.call(),opts);
+}
+
 export default{
 	getBalance:function(args,opts){ return getBalance.request(args,opts);},
 	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
@@ -152,5 +196,7 @@ export default{
 	},
 	sendTxTransaction: __sendTxTransaction,
 	createCRC20:__createCRC20,
-	callCRC20:__callCRC20
+	callCRC20:__callCRC20,
+	createCRC721:__createCRC721,
+	callCRC721:__callCRC721
 }
