@@ -41,7 +41,7 @@ class PatternMethod extends Method{
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
-		console.log("request==>"+baseUrl+this.uri+",data="+content);
+		// console.log("request==>"+baseUrl+this.uri+",data="+content);
 		if(rpcprovider){
 			return rpcprovider({
 				baseUrl: baseUrl,
@@ -61,6 +61,7 @@ class PatternMethod extends Method{
 
 var getBlockByNumber = PatternMethod._(_.template('{"number":"<%- args[0] %>"}'),"/bct/pbgbn.do");
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","gac");
+var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","glb");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"bct","GBA");
 var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"TXT","GTX");
 var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'),"ACT","QAS");
@@ -157,6 +158,7 @@ var __createCRC721=function(args,opts){
 	opts.exdata=args.exdata;
 	opts.names=args.names;
 	opts.txtype=enums.TYPE_CreateCryptoToken;
+	opts.total=args.total;
 
 	let crc=new CRC721(opts);
 	return sendRawTransaction.request(crc.create(),opts);
@@ -174,12 +176,11 @@ var __createCRC721=function(args,opts){
  */
 var __callCRC721=function(args,opts){
 	validOpts(opts);
-	opts.amount=args.amount;
-	opts.txtype=enums.TYPE_TokenTransaction;
+	opts.txtype=enums.TYPE_CryptoTokenTransaction;
 	opts.symbol=args.symbol;
-	opts.cryptoToken=args.cryptoToken;
-
-	opts.to=Array.isArray(args.to)?args.to:[args.to];
+	opts.cryptotoken=args.cryptotoken;
+	opts.amount=args.amount;
+	opts.to=[args.to];
 	let crc=new CRC721(opts);
 	return sendRawTransaction.request(crc.call(),opts);
 }
@@ -188,6 +189,7 @@ export default{
 	getBalance:function(args,opts){ return getBalance.request(args,opts);},
 	getBlockByNumber:function(args,opts){ return getBlockByNumber.request(args,opts);},
 	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
+	getBlockByMax:function(args,opts){ return getBlockByMax.request(args,opts);},
 	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
 	getStorageValue:function(args,opts){ return getStorageValue.request(args,opts);},
 	

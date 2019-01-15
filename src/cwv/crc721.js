@@ -2,7 +2,7 @@
  * @Author: camulos 
  * @Date: 2019-01-11 16:12:01 
  * @Last Modified by: camulos
- * @Last Modified time: 2019-01-12 16:57:05
+ * @Last Modified time: 2019-01-12 19:47:11
  */
 import enums from "./enums.js"
 import Method from './method'
@@ -42,17 +42,16 @@ export default class CRC721 extends Method {
             codes.push(m.code);
         })
         let data=this.cryptotokendata.create({
-            total:this.args.names.length,
-            exdata:this.args.exdata,
+            total:this.args.total,
+            exdata:Buffer.from(this.args.exdata,'hex'),
             name:names,
             symbol:this.args.symbol,
             code:codes
         });
-        
         let txbody = this.multiTransactionBody.create({
             timestamp:timestamp,
             type:Number.parseInt(enums.TYPE_CreateCryptoToken),
-            data:Buffer.from(this.cryptotokendata.encode(data).finish()).toString('hex')
+            data:Buffer.from(this.cryptotokendata.encode(data).finish(),'hex')
         })
 		let jsonBody = {
 			timestamp:timestamp,
@@ -62,13 +61,13 @@ export default class CRC721 extends Method {
         jsonBody.inputs=[];
 		txbody.inputs.push(this.inputs.create({
             address:Buffer.from(this.removePrefix(this.args.from),'hex'),
-            amount: new BN(this.args.amount).toArrayLike(Buffer),
+            amount: new BN('0').toArrayLike(Buffer),
             symbol:this.args.symbol,
             nonce: Number.parseInt(this.args.keypair.nonce)
         }))			
         jsonBody.inputs.push({
             address: this.removePrefix(this.args.from),
-            amount: this.args.amount,
+            amount: '0',
             symbol:this.args.symbol,
             nonce: this.args.keypair.nonce
         });
@@ -77,7 +76,7 @@ export default class CRC721 extends Method {
             signature:this.signatures(this.multiTransactionBody.encode(txbody).finish())
         });
 
-        console.log("create crc721 txbody====>",JSON.stringify(jsonBody));
+        // console.log("create crc721 txbody====>",JSON.stringify(jsonBody));
         return {
             transaction:{txBody:jsonBody}
         };
@@ -93,42 +92,42 @@ export default class CRC721 extends Method {
 			timestamp:timestamp,
 			type:enums.TYPE_CryptoTokenTransaction
 		};
-		jsonBody.inputs=[];
+        jsonBody.inputs=[];
 		txbody.inputs.push(this.inputs.create({
             address:Buffer.from(this.removePrefix(this.args.from),'hex'),
-            amount: new BN(this.args.amount).toArrayLike(Buffer),
+            amount: new BN(this.args.amount||'0').toArrayLike(Buffer),
+            cryptotoken:this.args.cryptotoken,
             symbol:this.args.symbol,
-            nonce:Number.parseFloat(this.args.keypair.nonce),
-            cryptoToken:this.args.cryptoToken
+            nonce:Number.parseFloat(this.args.keypair.nonce)
         }))	
 
         jsonBody.inputs.push({
             address:this.removePrefix(this.args.from),
-            amount: this.args.amount,
+            amount: this.args.amount||'0',
+            cryptotoken:this.args.cryptotoken,
             symbol:this.args.symbol,
-            nonce:this.args.keypair.nonce,
-            cryptoToken:this.args.cryptoToken
+            nonce:this.args.keypair.nonce
         })     
         jsonBody.outputs=[];   	
         this.args.to.map(m=>{
             txbody.outputs.push(this.outputs.create({
-                address:Buffer.from(this.removePrefix(m.addr),'hex'),
-                amount: new BN(m.amount).toArrayLike(Buffer),
+                address:Buffer.from(this.removePrefix(m),'hex'),
+                amount: new BN(this.args.amount||'0').toArrayLike(Buffer),
                 symbol:this.args.symbol,
-                cryptoToken:this.args.cryptoToken,
+                cryptotoken:this.args.cryptotoken
             }))
             jsonBody.outputs.push({
-                address:this.removePrefix(m.addr),
+                address:this.removePrefix(m),
+                amount: this.args.amount||'0',
                 symbol:this.args.symbol,
-                cryptoToken:this.args.cryptoToken,
-                amount: m.amount
+                cryptotoken:this.args.cryptotoken
             })
         })
 		jsonBody.signatures=[];
 		jsonBody.signatures.push({
             signature:this.signatures(this.multiTransactionBody.encode(txbody).finish())
         });
-        console.log("call crc721 txbody====>",JSON.stringify(jsonBody));
+        // console.log("call crc721 txbody====>",JSON.stringify(jsonBody));
         return {
             transaction:{txBody:jsonBody}
         };

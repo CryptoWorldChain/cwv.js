@@ -2,7 +2,7 @@
  * @Author: camulos 
  * @Date: 2019-01-11 16:12:01 
  * @Last Modified by: camulos
- * @Last Modified time: 2019-01-12 13:48:55
+ * @Last Modified time: 2019-01-14 17:45:04
  */
 import enums from "./enums.js"
 import Method from './method'
@@ -59,7 +59,7 @@ export default class CRC20 extends Method {
             signature:this.signatures(this.multiTransactionBody.encode(txbody).finish())
         });
 
-        console.log("create crc20 txbody====>",JSON.stringify(jsonBody));
+        // console.log("create crc20 txbody====>",JSON.stringify(jsonBody));:q
         return {
             transaction:{txBody:jsonBody}
         };
@@ -104,7 +104,7 @@ export default class CRC20 extends Method {
 		jsonBody.signatures.push({
             signature:this.signatures(this.multiTransactionBody.encode(txbody).finish())
         });
-        console.log("call crc20 txbody====>",JSON.stringify(jsonBody));
+        // console.log("call crc20 txbody====>",JSON.stringify(jsonBody));
         return {
             transaction:{txBody:jsonBody}
         };

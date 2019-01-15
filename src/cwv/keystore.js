@@ -64,8 +64,6 @@ var self={
 			// console.log("hashpasswd=="+hashpasswd);
 
 			var pkcs5_passwd=utils.toHex(hashpasswd.split('').map(x=>x.charCodeAt(0)))
-
-
 			var derivedKey = pbkdfmd5(Buffer.from(pkcs5_passwd,'hex'), salt, 32);
 			var aesCbc = new aesjs.ModeOfOperation.cbc(Buffer.from(derivedKey,'hex'),iv);
 			var result=aesCbc.decrypt(encryptedBytes).slice(0,ksJSON.params.l);
