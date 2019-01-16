@@ -6,18 +6,15 @@ import utils from './utils';
 export default class Method {
 
 	constructor(args) {
-		// code
 		if(args.constructor.name=="Array"){
 			this.opts = args;
-		}else if(args.constructor.name=="String")
-		{
+		}else if(args.constructor.name=="String"){
 			this.opts = [args];
 		}else{
 			this.opts = args;
 		}
 	}
 
-	// methods
 	toJSONPayload(){
 
 	}
@@ -25,8 +22,7 @@ export default class Method {
 	formatOutput(err,response,body){
 		if(!err){
 			return body;
-		}else
-		{
+		}else{
 			return {"ret":-1,"error":""+err,"respCode":response.statusCode}
 		}
 	}

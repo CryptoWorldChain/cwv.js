@@ -29,38 +29,23 @@ import BN from 'bn.js';
 	toJSONPayload(args){
 		return {"address":args[0]};
 	}
-
-	removePrefix(addr){
-		if(addr.startsWith('0x')){
-			return addr.substring(2);
-		}else{
-			return addr;
-		}
-	}
 }
 
 export default class MTxTransaction extends Transaction {
 	constructor(txtype,args) {
-		// code
 		super(args);
 		this.txtype=txtype;
 	}
-
-
 	genBody(){
-		//let MultiTransaction = proto.load('MultiTransaction');
 		let MultiTransactionBody = proto.load('MultiTransactionBody');
 		var txbody = NaN;
 		let keypair = this.args.keypair;
 		let timestamp = new Date().getTime();
-		if(this.txtype>0)
-		{
-			// console.log("create.type=="+this.txtype)
+		if(this.txtype>0){
 			txbody = MultiTransactionBody.create({
 				timestamp:timestamp,
-				'type':Number.parseInt(this.txtype)
+				type:Number.parseInt(this.txtype)
 			})
-			// console.log(txbody.type);
 		}else{
 			txbody = MultiTransactionBody.create({
 				timestamp:timestamp,
@@ -68,44 +53,38 @@ export default class MTxTransaction extends Transaction {
 		}
 
 		var jsonBody = {
-			"timestamp":timestamp,
-			"type":this.txtype
+			timestamp:timestamp,
+			type:this.txtype
 		};
-		
-
-		
 
 		if(this.args.data){
 			txbody.data = Buffer.from(this.args.data,'hex')
-			jsonBody['data'] = this.args.data
+			jsonBody.data = this.args.data
 		}
 		if(this.args.exdata){
 			txbody.exdata = Buffer.from(this.args.exdata,'hex')
-			jsonBody['exdata'] = this.args.exdata
+			jsonBody.exdata = this.args.exdata
 		}	
 
 		let inputs = proto.load('MultiTransactionInput');
 		jsonBody.inputs=[];
-		// console.log(new BN(this.args.amount).toArrayLike(Buffer).toString('hex'))
 		if(keypair.nonce>0){
 			txbody.inputs.push(inputs.create({
 				address:Buffer.from(this.removePrefix(this.args.from),'hex'),
 				nonce: keypair.nonce,
 				amount: new BN(this.args.amount).toArrayLike(Buffer)
 			}))
-		
 		}
 		else{
 			txbody.inputs.push(inputs.create({
 				address:Buffer.from(this.removePrefix(this.args.from),'hex'),
-				// nonce: keypair.nonce,
 				amount: new BN(this.args.amount).toArrayLike(Buffer)
 			}))	
 		}
 		jsonBody.inputs.push({
-				"nonce": keypair.nonce,
-				"address": this.removePrefix(this.args.from),
-				"amount": ""+this.args.amount
+			nonce: keypair.nonce,
+			address: this.removePrefix(this.args.from),
+			amount: ""+this.args.amount
 		});
 		if(this.args.to){
 			jsonBody.outputs=[];
@@ -123,15 +102,13 @@ export default class MTxTransaction extends Transaction {
 
 			}
 			jsonBody.outputs.push({
-					"address": this.removePrefix(this.args.to),
-					"amount": ""+this.args.amount
+				address: this.removePrefix(this.args.to),
+				amount: ""+this.args.amount
 			});
-
 		}
 
 		var  ecdata = Buffer.from(MultiTransactionBody.encode(txbody).finish())
-		if(this.txtype==0)
-		{
+		if(this.txtype==0){
 //			ecdata = ecdata.slice(0,ecdata.length-2);//slice for java!!!
 		}
 		// console.log("ecdata=="+ecdata.toString('hex'));
@@ -143,9 +120,7 @@ export default class MTxTransaction extends Transaction {
 		jsonBody.signatures=[];
 		jsonBody.signatures.push({"signature":signdata});
 
-		// console.log("senddata=="+JSON.stringify(jsonBody));
 		return {'transaction':{'txBody':jsonBody}};
 	}
-
 }
 

@@ -1,4 +1,3 @@
-
 import {Buffer} from 'buffer';
 import ecc from '../ecc/ecc'
 // import * as CryptoJS from 'crypto-js';
@@ -11,20 +10,15 @@ import sha2 from 'sha2'
 // window.sha2=sha2;
 import utils from './utils';
 
-
-
-
 function reverts(strhex){
 	if(strhex.length%2 != 0){
-		// console.log("padding:len="+strhex.length+",str="+strhex)
 		strhex = '0'+strhex
 	}
-	 var arr=new Uint8Array(new Buffer(strhex,'hex')).reverse()
-	 return utils.toHex(arr);
+	var arr=new Uint8Array(new Buffer(strhex,'hex')).reverse()
+	return utils.toHex(arr);
 }
 
 export default class KeyPair { 
-
 	constructor(pri,pub,addr,eckey,nonce){
 		this.hexPrikey = pri;
 		this.hexPubkey = pub;
@@ -50,8 +44,6 @@ export default class KeyPair {
 	}
 
 	static genFromPubkey(hexPubkey){ 
-		
-		//extract xl;
 		var x = Buffer.from(new Uint8Array(new Buffer(hexPubkey.slice(0,64),'hex')).reverse());
 		console.log("x=="+x.toString('hex'));
 		var y = Buffer.from(new Uint8Array(new Buffer(hexPubkey.slice(64,128),'hex')).reverse());
@@ -60,7 +52,6 @@ export default class KeyPair {
 		return KeyPair.genFromECCKey(key);
 	}
 	static genFromECCKey(key){
-		// console.log("genFromECCKey;key="+key)
 		var hexPrikey = key.getPrivate()?reverts(key.getPrivate().toString(16)): NaN;
 		var hexPubkey = new Buffer(key.getPublic().getX().clone().toArray().reverse()).toString('hex').slice(0,64)
 		hexPubkey = hexPubkey + new Buffer(key.getPublic().getY().clone().toArray().reverse()).toString('hex').slice(0,64);
@@ -71,12 +62,12 @@ export default class KeyPair {
 	}
 
 
-//生成随机密钥对
+	//生成随机密钥对
 	static genRandomKey(options){
 		var key = new ecc.ec('secp256r1').genKeyPair(options);
 		return KeyPair.genFromECCKey(key);
 	}
-//数据签名
+	//数据签名
 	ecHexSign(hexMsg){
 		var sc=sha2.sha256(hexMsg,'hex');
 		var s = this._ecKey.sign(sc);
@@ -86,14 +77,13 @@ export default class KeyPair {
 		result+= new Buffer(s.s.clone().toArray().reverse()).toString('hex').slice(0,64);
 		return result;
 	}
-
 	setNonce(nonce){
 		this.nonce = nonce;
 	}
 	increNonce(){
 		this.nonce = this.nonce+1;
 	}
-//验证签名
+	//验证签名
 	static ecHexVerify(hexMsg,hexSig){
 		var hh=sha2.sha256(hexMsg,'hex').toString('hex');
 		// console.log("hash="+hh);
@@ -117,7 +107,7 @@ export default class KeyPair {
 			return NaN;
 		}
 	}
-//验证签名
+	//验证签名
 	ecHexVerify(hexMsg,hexSig){
 		var hh=sha2.sha256(hexMsg,'hex').toString('hex');
 		if(hexSig.slice(0,128)!=this.hexPubkey){
@@ -137,7 +127,6 @@ export default class KeyPair {
 		var result = key.verify(hh,{r:r,s:s});
 		return result;
 	}
-
-};
+}
 
 

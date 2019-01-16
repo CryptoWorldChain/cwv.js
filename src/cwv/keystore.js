@@ -2,25 +2,18 @@ import proto from './protos'
 import config from './config'
 import utils from './utils'
 import aesjs from 'aes-js';
-
 import MD5 from 'md5.js';
 import sha3 from 'sha3';
 import KeyPair from "./keypair";
 
-
-
 const testnet_keystore1 = require('!Keystore/testnet/keystore1.json')
-
-
-var pbkdfmd5 = function(password,salt,bytesNeeded)
-{
+var pbkdfmd5 = function(password,salt,bytesNeeded){
 	
     var buf=[];// byte[]  buf = new byte[digest.getDigestSize()];
     var  key="";//= new byte[bytesNeeded];
     var digest = new MD5();
     
-    for (;;)
-    {
+    for (;;){
         digest.update(password);
         digest.update(salt);
 
@@ -42,14 +35,8 @@ var pbkdfmd5 = function(password,salt,bytesNeeded)
     return key;
 }
 
-
-
-
-
 var self={
-
 	pbkdfmd5:pbkdfmd5,
-
 	parse:function(ksJSON,passwd){
 		if(ksJSON.ksType=='aes'){
 			var encryptedBytes=utils.hexToArray(ksJSON.cipherText);

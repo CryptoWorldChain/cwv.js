@@ -1,18 +1,12 @@
 import crptoutils from 'minimalistic-crypto-utils';
 import aesjs from 'aes-js';
-
 import pbkdf2 from 'pbkdf2';
 import sha2 from 'sha2'
-
 import sha3 from 'sha3'
-
 import Method from './method.js'
-
-
 var __toArray = function(hexstr){
 	return crptoutils.toArray(hexstr,'hex');
 }
-
 
 function __randomArray(length, max) {
 	var rmax = max || 256;

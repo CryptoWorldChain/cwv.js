@@ -1,15 +1,12 @@
 import Method from './method.js'
 import 	_ from 'lodash'
 import utils from './utils';
-// import rp from 'request-promise';
 import config	from "./config.js"
 import MTxTransaction	from "./transaction.js"
 import CRC20 from "./crc20.js"
 import CRC721 from "./crc721.js"
 import KeyPair from "./keypair";
-// var mockrp = rp;
 import enums from "./enums.js"
-
 
 class PatternMethod extends Method{
 	constructor(pattern,uri){
@@ -62,10 +59,10 @@ class PatternMethod extends Method{
 var getBlockByNumber = PatternMethod._(_.template('{"number":"<%- args[0] %>"}'),"/bct/pbgbn.do");
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","gac");
 var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'),"act","glb");
-var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"bct","GBA");
-var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"TXT","GTX");
-var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'),"ACT","QAS");
-var sendRawTransaction = PatternMethod._(_.template('""'),"TXT","MTX");
+var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"bct","gba");
+var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'),"txt","gtx");
+var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'),"act","qas");
+var sendRawTransaction = PatternMethod._(_.template('""'),"txt","mtx");
 
 // 		   getBlockTransactionCount,
 //         getBlockUncleCount,
@@ -191,8 +188,7 @@ export default{
 	getBlockByHash:function(args,opts){ return getBlockByHash.request(args,opts);},
 	getBlockByMax:function(args,opts){ return getBlockByMax.request(args,opts);},
 	getTransaction:function(args,opts){ return getTransaction.request(args,opts);},
-	getStorageValue:function(args,opts){ return getStorageValue.request(args,opts);},
-	
+	getStorageValue:function(args,opts){ return getStorageValue.request(args,opts);},	
 	transfer:function(toAddr,amount,opts){
 		return __sendTxTransaction(enums.TYPE_DEFAULT,toAddr,amount,opts);
 	},
@@ -200,5 +196,5 @@ export default{
 	createCRC20:__createCRC20,
 	callCRC20:__callCRC20,
 	createCRC721:__createCRC721,
-	callCRC721:__callCRC721
+	callCRC721:__callCRC721,
 }
