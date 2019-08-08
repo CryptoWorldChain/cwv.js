@@ -44,7 +44,7 @@ class PatternMethod extends Method {
 			})
 		} else {
 			return new Promise((resolve, reject) => {
-				reject("rpc provider not found")
+				reject("rpc provider not found") 
 			});;
 		}
 	}
@@ -280,7 +280,7 @@ export default {
 	 * @param {*} args {"data":"", "amount":""}
 	 */
 	createContract: function (from, exdata, args) { 
-		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.nonce, 4, exdata, args);
 	},
 	/**
 	 * 调用合约
@@ -289,7 +289,7 @@ export default {
 	 * @param {*} args {"contract":"", "data":"", "amount":""}
 	 */
 	callContract: function (from, exdata, args) { 
-		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.nonce, 5, exdata, args);
 	},
 	/**
 	 * 发行ERC20 token
@@ -299,7 +299,7 @@ export default {
 	 */
 	publicToken: function (from, exdata, args) { 
 		args.opCode = 0;
-		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
 	},
 	/**
 	 * 燃烧ERC20 token
@@ -309,7 +309,7 @@ export default {
 	 */
 	burnToken: function (from, exdata, args) { 
 		args.opCode = 1;
-		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
 	},
 	/**
 	 * 增发ERC20 token
@@ -319,6 +319,6 @@ export default {
 	 */
 	mintToken: function (from, exdata, args) {
 		args.opCode = 2;
-		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
 	}
 }
