@@ -4,6 +4,7 @@ import utils from './utils';
 import config from "./config.js"
 import TransactionInfo from "./transaction.js"
 import KeyPair from "./keypair";
+import BN from 'bn.js';
 
 class PatternMethod extends Method {
 	constructor(pattern, uri) {
@@ -21,26 +22,26 @@ class PatternMethod extends Method {
 	request(args, opts) {
 		var content;
 		opts = opts || {};
-		if (args.constructor.name == "String") {
-			content = this.pattern({ 'args': [args] })
-		} else
-			if (args.constructor.name == "Array") {
-				content = this.pattern({ 'args': args })
-			} else {
-				content = JSON.stringify(args);
-			}
-		// console.log("content="+content);
+		// if (args.constructor.name == "String") {
+		// 	content = this.pattern({ 'args': [args] })
+		// } else
+		// 	if (args.constructor.name == "Array") {
+		// 		content = this.pattern({ 'args': args })
+		// 	} else {
+		// 		content = JSON.stringify(args);
+		// 	}
+		content = args;
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
-		// console.log("request==>"+baseUrl+this.uri+",data="+content);
+		console.log("request==>"+baseUrl+this.uri+",data="+content);
 		if (rpcprovider) {
 			return rpcprovider({
 				baseUrl: baseUrl,
 				uri: this.uri,
 				method: 'POST',
 				body: content
-				//json:false
+				//json:true
 			})
 		} else {
 			return new Promise((resolve, reject) => {
@@ -55,9 +56,9 @@ var getBlockByNumber = PatternMethod._(_.template('{"height":"<%- args[0] %>"}')
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "gac");
 var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "glb");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gbh");
-var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "txt", "gth");
+var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "tct", "gth");
 var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'), "act", "qcs");
-var sendRawTransaction = PatternMethod._(_.template('""'), "txt", "mtx");
+var sendRawTransaction = PatternMethod._(_.template('""'), "tct", "mtx");
 
 // 		   getBlockTransactionCount,
 //         getBlockUncleCount,
@@ -130,20 +131,19 @@ var validOpts = function (opts) {
 
 var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 	//发送交易
-	opts = opts || {};
-	var from = opts.from;
 	if (!from) {
 		return new Promise((resolve, reject) => {
 			reject("cwv.rpc:from not set or type error:" + from);
 		});
 	}
-	var keypair = opts.from.keypair;
+	var keypair = from.keypair;
 	if (!keypair) {
 		return new Promise((resolve, reject) => {
 			reject("key pair not set")
 		});
 	}
 
+	var opts = {};
 	switch (type) {
 		case transactionDataTypeEnum.PUBLICCRYPTOTOKEN:
 			break;
@@ -167,7 +167,7 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 			 * args = {"data":"", "amount":""}
 			 * 
 			*/
-			if (isNullOrUndefined(args) || isNullOrUndefined(args.data)) {
+			if (!args || !args.data) {
 				reject("缺少参数data");
 			} else {
 				let transactionData = {};
@@ -214,11 +214,12 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 			break;
 	}
 
-	let trans = new TransactionInfo(opts);
+	let trans = new TransactionInfo(opts).genBody();
 	return sendRawTransaction.request(trans, opts);
 };
 
 var getTransactionOpts = function (from, nonce, exdata, data, outputs) {
+	var opts = {};
 	opts.from = from.keypair.address;
 	opts.keypair = from.keypair;
 	opts.nonce = (nonce === 0 || isNaN(nonce)) ? null : nonce;
@@ -241,9 +242,18 @@ var transactionDataTypeEnum = {
 	UNIONACCOUNTTRANSFER: 8,
 	UNIONACCOUNTCONFIRM: 9
 };
-
+var removePrefix = function(addr){
+	if(addr.startsWith('0x')){
+		return addr.substring(2);
+	}else{
+		return addr;
+	}
+}
 export default {
-	getBalance: function (args, opts) { return getBalance.request(args, opts); },
+	getBalance: function (args, opts) { 
+		console.log(args);
+		return getBalance.request({"address": removePrefix(args)}, opts); 
+	},
 	getBlockByNumber: function (args, opts) { return getBlockByNumber.request(args, opts); },
 	getBlockByHash: function (args, opts) { return getBlockByHash.request(args, opts); },
 	getBlockByMax: function (args, opts) { return getBlockByMax.request(args, opts); },

@@ -40,13 +40,12 @@ export default class TransactionInfo extends Transaction {
 		var txbody = NaN;
 		let keypair = this.args.keypair;
 		// let timestamp = new Date().getTime();
-
 		/////////////////////////////
         txbody = TransactionBody.create();
 
 
-        txbody.nonce = this.args.nonce;
-        txbody.address = Buffer.from(this.removePrefix(this.args.from),'hex');
+        txbody.nonce = this.args.keypair.nonce;
+        txbody.address = Buffer.from(this.removePrefix(this.args.keypair.hexAddress),'hex');
         
         if(this.args.exdata !== null) {
             txbody.exdata = Buffer.from(this.args.exdata, 'hex');
@@ -84,7 +83,7 @@ export default class TransactionInfo extends Transaction {
         });
 
         let tx = Buffer.from(transactionInfo.encode(tinfo).finish(),"hex").toString("hex");
-
-        return JSON.stringify({tx:tx});
+		
+        return JSON.stringify({"tx":tx});
 	}
 }

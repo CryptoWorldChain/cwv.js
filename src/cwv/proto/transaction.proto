@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package org.brewchain.core.model;
+
+message TransactionInfo {
+	bytes hash = 1;
+	TransactionBody body = 2;
+	bytes signature = 3;
+	TransactionStatus status = 4;
+	TransactionNode node = 5;
+}
+
+message TransactionBody {
+	int32 nonce = 1;
+	bytes address = 2;
+	repeated TransactionOutput outputs = 3;
+	// bytes fee = 4;
+	TransactionData data = 5;
+	bytes exdata = 6;
+	int64 timestamp = 7;
+}
+
+message TransactionOutput {
+	bytes address = 1;
+	bytes amount = 2;
+	bytes token = 3;
+	bytes tokenAmount = 4;
+	bytes symbol = 5;
+	repeated bytes cryptoToken = 6;
+}
+
+message TransactionNode {
+	string nid = 1;
+	bytes address = 2;
+}
+
+message TransactionStatus {
+	bytes status = 1;
+	bytes result = 2;
+	bytes hash = 3;
+	int64 height = 4;
+	int64 timestamp = 5;
+}
+
+//message BroadcastTransactionMsg {
+//	repeated bytes txHash = 1;
+//	repeated bytes txDatas = 2;
+//}
+
+message TransactionData {
+	DataType type = 1;
+	UnionAccountData unionAccountData = 10;
+	UnionAccountTransferData unionAccountTransferData = 11;
+	UnionAccountConfirmData unionAccountConfirmData = 12;
+	PublicCryptoTokenData cryptoTokenData = 20;
+	OwnerTokenData ownerTokenData = 30;
+	UserTokenData userTokenData = 31;
+	PublicContractData publicContractData = 40;
+	CallContractData callContractData = 41;
+	
+//	// FIXME 这是为测试准备的，不要发布到生产环境
+//	WhiteListData whiteListData = 50;
+}
+enum DataType {
+	NONE = 0;
+	PUBLICCRYPTOTOKEN = 1;
+	OWNERTOKEN = 2;
+	USERTOKEN = 3;
+	PUBLICCONTRACT = 4;
+	CALLCONTRACT = 5;
+	CREATEUNIONACCOUNT = 6;
+	PUBLICUNIONACCOUNT = 7;
+	UNIONACCOUNTTRANSFER = 8;
+	UNIONACCOUNTCONFIRM = 9;
+//	    
+//	    // FIXME 这是为测试准备的，不要发布到生产环境
+//	    WHITELIST = 10;
+}
+//	// FIXME 这是为测试准备的，不要发布到生产环境
+//	message WhiteListData {
+//		repeated string addrs = 1;
+//		repeated int32 status = 2;
+//	}
+message PublicCryptoTokenData {
+	int64 total = 1;
+	bytes symbol = 2;
+	repeated string name = 3;
+	repeated string code = 4;
+	repeated string prop = 5;
+}
+message OwnerTokenData {
+	bytes token = 1;
+	bytes amount = 2;
+	OwnerTokenOpCode opCode = 3;
+	enum OwnerTokenOpCode {
+		PUBLIC = 0;
+		BURN = 1;
+		MINT = 2;
+	}
+}
+message UserTokenData {
+	bytes token = 1;
+	bytes address = 2;
+	bytes amount = 3;
+	UserTokenOpCode opCode = 4;
+	enum UserTokenOpCode {
+		FREEZE = 0;
+		UNFREEZE = 1;
+		LOCK = 2;
+		UNLOCK = 3;
+	}
+}
+message PublicContractData {
+	bytes data = 1;
+	bytes code = 2;
+	bytes amount = 3;
+}
+message CallContractData {
+	bytes data = 1;
+	bytes contract = 2;
+	bytes amount = 3;
+}
+message UnionAccountData {
+	bytes max = 1;
+	bytes acceptMax = 2;
+	int32 acceptLimit = 3;
+	repeated bytes address = 4;
+}
+message UnionAccountTransferData {
+	bytes fromSubAccount = 1;
+}
+message UnionAccountConfirmData {
+	bytes hash = 1;
+	bytes fromSubAccount = 2;
+}
