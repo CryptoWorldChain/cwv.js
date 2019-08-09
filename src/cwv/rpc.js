@@ -34,7 +34,7 @@ class PatternMethod extends Method {
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
-		console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
+		//console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
 		if (rpcprovider) {
 			return rpcprovider({
 				baseUrl: baseUrl,
@@ -213,7 +213,7 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 			break;
 		case transactionDataTypeEnum.UNIONACCOUNTTRANSFER:
 			break;
-		case TransactionDataTypeEnum.UNIONACCOUNTCONFIRM:
+		case transactionDataTypeEnum.UNIONACCOUNTCONFIRM:
 			break;
 		default:
 			/** 
@@ -283,11 +283,11 @@ export default {
 	},
 	/**
 	 * 
-	 * @param {*} args 
+	 * @param {*} args 0x59514f8d87c964520fcaf515d300e3f704bf6fcb
 	 * @param {*} opts ["","",""]
 	 */
 	getStorageValue: function (args, opts) { 
-		return getStorageValue.request(args, opts); 
+		return getStorageValue.request({"address":removePrefix(args), "key":[opts]}); 
 	},
 	/**
 	 * 转账
