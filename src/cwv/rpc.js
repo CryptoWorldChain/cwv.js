@@ -34,7 +34,7 @@ class PatternMethod extends Method {
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
-		console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
+		// console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
 		if (rpcprovider) {
 			return rpcprovider({
 				baseUrl: baseUrl,
