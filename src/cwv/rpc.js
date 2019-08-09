@@ -174,7 +174,13 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 				transactionData.type = transactionDataTypeEnum.PUBLICCONTRACT;
 				transactionData.publicContractData = {};
 				transactionData.publicContractData.data = Buffer.from(args.data, "hex");
-				transactionData.publicContractData.amount = new BN(args.amount).toArrayLike(Buffer)
+				if (!args.amount) {
+					args.amount = null;
+					transactionData.publicContractData.amount = args.amount;
+				} else {
+					transactionData.publicContractData.amount = new BN(args.amount).toArrayLike(Buffer);
+				}
+				
 				opts = getTransactionOpts(from, nonce, exdata, transactionData);
 			}
 			break;
@@ -189,9 +195,14 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 				let transactionData = {};
 				transactionData.type = transactionDataTypeEnum.CALLCONTRACT;
 				transactionData.callContractData = {};
-				transactionData.callContractData.contract = Buffer.from(args.contract, "hex");
 				transactionData.callContractData.data = Buffer.from(args.data, "hex");
-				transactionData.callContractData.amount = new BN(args.amount).toArrayLike(Buffer);
+				transactionData.callContractData.contract = Buffer.from(args.contract, "hex");
+				if (!args.amount) {
+					args.amount = null;
+					transactionData.callContractData.amount = args.amount;
+				} else {
+					transactionData.callContractData.amount = new BN(args.amount).toArrayLike(Buffer);
+				}
 				opts = getTransactionOpts(from, nonce, exdata, transactionData);
 			}
 
@@ -250,14 +261,25 @@ var removePrefix = function(addr){
 	}
 }
 export default {
+	/**
+	 * 获取balance
+	 * @param {*} args 0x59514f8d87c964520fcaf515d300e3f704bf6fcb
+	 * @param {*} opts 
+	 */
 	getBalance: function (args, opts) { 
-		console.log(args);
 		return getBalance.request({"address": removePrefix(args)}, opts); 
 	},
 	getBlockByNumber: function (args, opts) { return getBlockByNumber.request(args, opts); },
 	getBlockByHash: function (args, opts) { return getBlockByHash.request(args, opts); },
 	getBlockByMax: function (args, opts) { return getBlockByMax.request(args, opts); },
-	getTransaction: function (args, opts) { return getTransaction.request(args, opts); },
+	/**
+	 * 查交易
+	 * @param {*} args "aabc6be80cb8f2f2c3657532833bde26692986c38421ab4a2141f882cee2b0f1"
+	 * @param {*} opts 
+	 */
+	getTransaction: function (args, opts) { 
+		return getTransaction.request({"hash": removePrefix(args)}, opts); 
+	},
 	/**
 	 * 
 	 * @param {*} args 
