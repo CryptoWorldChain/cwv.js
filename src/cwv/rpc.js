@@ -230,6 +230,36 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 	return sendRawTransaction.request(trans, opts);
 };
 
+var generateOutputs = function (outputs){
+    let outs = [];
+    let pams = JSON.parse(outputs);
+    for(let i=0;i<pams.length;i++){
+        let pm = pams[i];
+        let out={
+            address: Buffer.from(pm.address,"hex"),
+            amount: new BN(0).toArrayLike(Buffer),
+        };
+        if(pm.amount){
+            out.amount = new BN(pm.amount).toArrayLike(Buffer);
+        }
+        if(pm.token && pm.tokenAmount){
+            out.token = Buffer.from(pm.token,"ascii");
+            out.tokenAmount = new BN(pm.tokenAmount).toArrayLike(Buffer);
+        }
+        if(pm.cryptoToken && pm.symbol){
+            let cryTokens = [];
+            for(let j=0;j<pm.cryptoToken.length;j++){
+                cryTokens.push(Buffer.from(pm.cryptoToken[j],"hex"));
+            }
+            out.symbol= Buffer.from(pm.symbol,"ascii");
+            out.cryptoToken= cryTokens;
+        }
+        outs.push(out);
+    }
+    return outs;
+}
+
+
 var getTransactionOpts = function (from, nonce, exdata, data, outputs) {
 	var opts = {};
 	opts.from = from.keypair.address;
