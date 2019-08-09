@@ -43,8 +43,9 @@ export default class TransactionInfo extends Transaction {
 		/////////////////////////////
         txbody = TransactionBody.create();
 
-
-        txbody.nonce = this.args.keypair.nonce;
+		if (this.args.keypair.nonce) {
+			txbody.nonce = this.args.keypair.nonce;
+		}
         txbody.address = Buffer.from(this.removePrefix(this.args.keypair.hexAddress),'hex');
         
         if(this.args.exdata !== null) {

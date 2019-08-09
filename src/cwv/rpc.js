@@ -226,6 +226,7 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 	}
 
 	let trans = new TransactionInfo(opts).genBody();
+	console.log("nonce=" + opts.keypair.nonce);
 	return sendRawTransaction.request(trans, opts);
 };
 
