@@ -84,6 +84,6 @@ export default class TransactionInfo extends Transaction {
 
         let tx = Buffer.from(transactionInfo.encode(tinfo).finish(),"hex").toString("hex");
 		
-        return JSON.stringify({"tx":tx});
+        return {"tx":tx};
 	}
 }

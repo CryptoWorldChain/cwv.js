@@ -30,11 +30,11 @@ class PatternMethod extends Method {
 		// 	} else {
 		// 		content = JSON.stringify(args);
 		// 	}
-		content = args;
+		content = JSON.stringify(args);
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
-		console.log("request==>"+baseUrl+this.uri+",data="+content);
+		console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
 		if (rpcprovider) {
 			return rpcprovider({
 				baseUrl: baseUrl,
