@@ -220,7 +220,7 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 			 * args = [{"address":"","amount":100,"token":"CWV","tokenAmount":1000,"symbol":"house","cryptoToken":["hash0","hash1"]},{}]
 			 * 
 			*/
-			let outs = generateOutputs(outputs);
+			let outs = generateOutputs(args);
 			opts = getTransactionOpts(from, nonce, exdata, null, outs);
 			break;
 	}
@@ -323,7 +323,7 @@ export default {
 	 * 转账
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
-	 * @param {*} outputs 
+	 * @param {*} args 
 	 * 	transfer balance
 	 * 	args=[{"address":"","amount":100},{"address":"", "amount":20}]
 	 * 
@@ -333,8 +333,8 @@ export default {
 	 * 	transfer crypto token
 	 * 	args=[{"address","symbol":"house","cryptoToken":["hash0","hash1"]},{"address","symbol":"house","cryptoToken":["hash2","hash3"]}]
 	 */
-	transfer: function (from, exdata, outputs) {
-		return __sendTxTransaction(from, from.nonce, 0, exdata, outputs);
+	transfer: function (from, exdata, args) {
+		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
 	},
 	/**
 	 * 创建合约
