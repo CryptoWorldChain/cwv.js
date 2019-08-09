@@ -34,7 +34,7 @@ class PatternMethod extends Method {
 		// return utils.reqMan.request(this,content);
 		var baseUrl = opts.server_base || global.server_base || config.server_base;
 		var rpcprovider = config.rpc_provider;
-		//console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
+		// console.log("request==>"+baseUrl+this.uri+",data="+ JSON.stringify(content));
 		if (rpcprovider) {
 			return rpcprovider({
 				baseUrl: baseUrl,
@@ -226,7 +226,7 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 	}
 
 	let trans = new TransactionInfo(opts).genBody();
-	console.log("nonce=" + opts.keypair.nonce);
+	// console.log("nonce=" + opts.keypair.nonce);
 	return sendRawTransaction.request(trans, opts);
 };
 
