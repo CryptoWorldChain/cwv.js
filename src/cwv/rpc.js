@@ -226,17 +226,17 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 	}
 
 	let trans = new TransactionInfo(opts).genBody();
-	// console.log("nonce=" + opts.keypair.nonce);
 	return sendRawTransaction.request(trans, opts);
 };
 
 var generateOutputs = function (outputs){
     let outs = [];
-    let pams = JSON.parse(outputs);
+	let pams = outputs;
+
     for(let i=0;i<pams.length;i++){
         let pm = pams[i];
         let out={
-            address: Buffer.from(pm.address,"hex"),
+            address: Buffer.from(removePrefix(pm.address),"hex"),
             amount: new BN(0).toArrayLike(Buffer),
         };
         if(pm.amount){
@@ -334,7 +334,7 @@ export default {
 	 * 	args=[{"address","symbol":"house","cryptoToken":["hash0","hash1"]},{"address","symbol":"house","cryptoToken":["hash2","hash3"]}]
 	 */
 	transfer: function (from, exdata, args) {
-		return __sendTxTransaction(from, from.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, 0, exdata, args);
 	},
 	/**
 	 * 创建合约

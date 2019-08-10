@@ -50,7 +50,6 @@ export default class TransactionInfo extends Transaction {
         
         if(this.args.exdata !== null) {
             txbody.exdata = Buffer.from(this.args.exdata, 'hex');
-
         }
 
         if (this.args.outputs !== null)
