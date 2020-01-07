@@ -1,3 +1,4 @@
+
 function config(){
 	this.rpc_provider = NaN;
 }

@@ -3,9 +3,10 @@
   "version": "1.4.0",
   "description": "CWV Chain JavaScript API & SDK",
   "scripts": {
-    "test": "npm src/buffle/index.js",
+    "test": "babel-node --presets env src/index.js",
     "build": "webpack --config webpack.config.js",
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server",
+    "trans": "node dist/test.js"
   },
   "repository": {
     "type": "git",

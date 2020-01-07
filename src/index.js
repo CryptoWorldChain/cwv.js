@@ -1,8 +1,3 @@
-
-
-
-import {Buffer} from 'buffer';
-
 import KeyPair  from "./cwv/keypair.js";
 import Protos	from "./cwv/protos.js"
 import keystore	from "./cwv/keystore.js"

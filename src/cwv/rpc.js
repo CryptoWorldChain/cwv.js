@@ -305,7 +305,7 @@ export default {
 	getBlockByMax: function (args, opts) { return getBlockByMax.request(args, opts); },
 	/**
 	 * 查交易
-	 * @param {*} args "aabc6be80cb8f2f2c3657532833bde26692986c38421ab4a2141f882cee2b0f1"
+	 * @param {*} args "0xaabc6be80cb8f2f2c3657532833bde26692986c38421ab4a2141f882cee2b0f1"
 	 * @param {*} opts 
 	 */
 	getTransaction: function (args, opts) { 
