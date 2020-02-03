@@ -229,6 +229,7 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 	return sendRawTransaction.request(trans, opts);
 };
 
+
 var generateOutputs = function (outputs){
     let outs = [];
 	let pams = outputs;
@@ -383,5 +384,15 @@ export default {
 	mintToken: function (from, exdata, args) {
 		args.opCode = 2;
 		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
+	},
+	/**
+	 * 签名
+	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000}
+	 */
+	sign:function(from,args){
+		let keypair = this.from.keypair;
+		var  ecdata = Buffer.from(TransactionBody.encode(txbody).finish());
+		var ecdataSign = keypair.ecHexSign(ecdata);
+		return Buffer.from(ecdataSign,"hex")
 	}
 }
