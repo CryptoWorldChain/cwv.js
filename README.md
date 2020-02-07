@@ -73,20 +73,32 @@ cwv.rpc.getBlockByMax().then(function(result){
 })
 ```
 
-Send transaction,Can create contracts, execute contracts, send regular transactions，Transaction type supported by cwv main chain
+Send transfer，support balance transfer，token transfer， crypto token transfer 。
 
 ```js
 const cwv=require('@cwv/cwv.js');
-//Create contract type=7
-opts.data="" //set contract content;
-cwv.rpc.sendTxTransaction(type,NaN,amount,opts).then(function(result){
-    console.log(result);
-})
-//Execution contract type=8
-opts.data="" //set contract content;
-let to='' //set contract address
-cwv.rpc.sendTxTransaction(type,to,amount,opts).then(function(result){
-    console.log(result);
+/**
+* transfer
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args 
+* 	transfer balance
+* 	args=[{"address":"","amount":100},{"address":"", "amount":20}]
+* 
+* 	transfer token
+* 	args=[
+* 		{"address":"","token":"AAA","tokenAmount":1000},
+* 		{"address":"","token":"AAA","tokenAmount":2000}
+*		]
+* 
+* 	transfer crc721 token
+* 	args=[
+* 		{"address":"","symbol":"house","cryptoToken":["hash0","hash1"]},
+* 		{"address":"","symbol":"house","cryptoToken":["hash2","hash3"]}
+* 	]
+*/
+cwv.rpc.transfer(from,exdata,args).then(function(result){
+    console.log(result)
 })
 ```
 
@@ -98,50 +110,122 @@ cwv.rpc.getTransaction('f9bea09140e8e2eb2956976c3373418e2a935d821732d86bce33117d
 })
 ```
 
-Create a crc20 token transaction
+Create a token transaction
 ```js
 const cwv=require('@cwv/cwv.js');
-//Issue 10 billion
-cwv.rpc.createCRC20({'token':'CWC','amount':'1000000000000000000000000000'},opts).then(function(result){
+/**
+* create token
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":0}
+*/
+cwv.rpc.publicToken(from, exdata, args).then(function(result){
     console.log(result)
 })
 ```
-Execute the crc20 token transaction
+Burn a token transaction
+
 ```js
 const cwv=require('@cwv/cwv.js');
-//Transfer out 6 cwc and transfer to three users
-cwv.rpc.callCRC20({
-    'token':'CWC','amount':'60000000000000000000',to:[
-        {'addr':'ba363efb1742f0a0487efbdf57f023374c9c40d3','amount':'20000000000000000000'},
-        {'addr':'4ea1f354e61932422eb3cfc45e50446a831a7407','amount':'20000000000000000000'},
-        {'addr':'38e2d6af03bce30f5b4040456242f66519636a48','amount':'20000000000000000000'}
-    ]
-}).then(function(result){
+/**
+* burn token
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":1}
+*/
+cwv.rpc.burnToken(from,exdata,args).then(function(result){
     console.log(result)
 })
 ```
+
+Additional a token transaction
+
+```java
+const cwv=require('@cwv/cwv.js');
+/**
+* Additional token
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":2}
+*/
+cwv.rpc.mintToken(from,exdata,args).then(function(result){
+    console.log(result)
+})
+```
+
+Create contract
+
+```js
+const cwv=require('@cwv/cwv.js');
+/**
+* createContract
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args {"data":"", "amount":""}
+*/
+cwv.rpc.createContract(from,exdata,args).then(function(result){
+    console.log(result)
+})
+```
+
+Call contract
+
+```js
+const cwv=require('@cwv/cwv.js');
+/**
+* callContract
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args {"contract":"", "data":"", "amount":""}
+*/
+cwv.rpc.callContract(from,exdata,args).then(function(result){
+    console.log(result)
+})
+```
+
 Create crc721 token transaction
 ```js
 const cwv=require('@cwv/cwv.js');
-let names=[{'name':'test','code':'1'}]
-cwv.rpc.createCRC721({
-    'symbol':'good','total':'10000','exdata':'Extended data','names':names
-}).then(function(result){
+/**
+* create CRC721 token
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} exdata Plaintext
+* @param {*} args {"data":"", "amount":""}
+*/
+cwv.rpc.createCrypto(from,exdata,args).then(function(result){
     console.log(result)
 })
 ```
-Execute crc721 token transaction,Check the balance to get cryptotoken
+signEvfsFileUpload sign
+
 ```js
 const cwv=require('@cwv/cwv.js');
-cwv.rpc.callCRC721({
-    'symbol':'good',
-    'cryptotoken':'c2f651cea3b93b4fa95b27bb1c0139f021fcd4a8a0fd9cc25fcbefde4008a0f3',
-    'amount':'20000000000000000000',
-    'to':"ba363efb1742f0a0487efbdf57f023374c9c40d3"
-}).then(function(result){
+/**
+* get evfs file upload sign
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} args {"evfs":Object}
+*/
+cwv.rpc.signEvfsFileUpload(from, exdata, args).then(function(result){
     console.log(result)
 })
 ```
+
+signEvfsAuthFile
+
+```js
+const cwv=require('@cwv/cwv.js');
+/**
+* get evfs auth sign
+* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} args {"fileHash":"","addAddrs":["",""]}  //add auth list
+									{"fileHash":"","removeAddrs":["",""]} //remove auth list
+*/
+cwv.rpc.signEvfsAuthFile(from, exdata, args).then(function(result){
+    console.log(result)
+})
+```
+
+
 
 ### License
 

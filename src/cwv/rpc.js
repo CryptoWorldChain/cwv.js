@@ -94,15 +94,13 @@ var validOpts = function (opts) {
  * from = {"keypair":{"address":"","privateKey":""}, "nonce": 0}
  * 
  * type = 	NONE: 0,
- *			PUBLICCRYPTOTOKEN: 1,
+ * 			PUBLICCRYPTOTOKEN: 1,
  *			OWNERTOKEN: 2,
- *			USERTOKEN: 3,
  *			PUBLICCONTRACT: 4,
  *			CALLCONTRACT: 5,
- *			CREATEUNIONACCOUNT: 6,
- *			PUBLICUNIONACCOUNT: 7,
- *			UNIONACCOUNTTRANSFER: 8,
- *			UNIONACCOUNTCONFIRM: 9
+ *          EVFSREQFILEUPLOAD: 9,
+ *	        EVFSAUTHORISEFILEOP: 10,
+ *	        EVFSCONFIRMFILEUPLOAD: 11
  *
  * create contract
  * args={"data":"", "amount":""}
@@ -126,10 +124,12 @@ var validOpts = function (opts) {
  * args=[{"address":"","token":"AAA","tokenAmount":1000},{"address":"","token":"AAA","tokenAmount":2000}]
  * 
  * transfer crypto token
- * args=[{"address","symbol":"house","cryptoToken":["hash0","hash1"]},{"address","symbol":"house","cryptoToken":["hash2","hash3"]}]
+ * args=[{"address":"","symbol":"house","cryptoToken":["hash0","hash1"]},{"address":"","symbol":"house","cryptoToken":["hash2","hash3"]}]
+ * 
+ * evfs fileupload
+ * args={}
 */
-
-var __sendTxTransaction = function (from, nonce, type, exdata, args) {
+var __sign = function(from, nonce, type, exdata, args){
 	//发送交易
 	if (!from) {
 		return new Promise((resolve, reject) => {
@@ -145,8 +145,6 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 
 	var opts = {};
 	switch (type) {
-		case transactionDataTypeEnum.PUBLICCRYPTOTOKEN:
-			break;
 		case transactionDataTypeEnum.OWNERTOKEN:
 			if (!args.token || !args.amount || isNullOrUndefined(args.opCode)) {
 				reject({ "msg": "缺少token 或 amount 或 opcode" });
@@ -160,7 +158,24 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 				opts = getTransactionOpts(from, nonce, null, transactionData);
 			}
 			break;
-		case transactionDataTypeEnum.USERTOKEN:
+		case transactionDataTypeEnum.PUBLICCRYPTOTOKEN:
+			if (!args || !args.data) {
+				reject("缺少参数data");
+			} else {
+				let transactionData = {};
+				transactionData.type = transactionDataTypeEnum.PUBLICCRYPTOTOKEN;
+				transactionData.cryptoTokenData = {};
+				transactionData.cryptoTokenData.total = Buffer.from(args.data, "hex");
+				transactionData.cryptoTokenData.symbol = Buffer.from(args.data, "hex");
+				transactionData.cryptoTokenData.name = Buffer.from(args.data, "hex");
+				transactionData.cryptoTokenData.code = Buffer.from(args.data, "hex");
+				transactionData.cryptoTokenData.prop = {
+					key:[],value:[]
+				};
+				transactionData.cryptoTokenData.toAddress = Buffer.from(args.data, "hex");
+				
+				opts = getTransactionOpts(from, nonce, exdata, transactionData);
+			}
 			break;
 		case transactionDataTypeEnum.PUBLICCONTRACT:
 			/** 
@@ -207,14 +222,44 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 			}
 
 			break;
-		case transactionDataTypeEnum.CREATEUNIONACCOUNT:
-			break;
-		case transactionDataTypeEnum.PUBLICUNIONACCOUNT:
-			break;
-		case transactionDataTypeEnum.UNIONACCOUNTTRANSFER:
-			break;
-		case transactionDataTypeEnum.UNIONACCOUNTCONFIRM:
-			break;
+		case transactionDataTypeEnum.EVFSREQFILEUPLOAD:
+			/**
+			 * args = {"evfs":object}
+			 */
+			if (!args.evfs){
+				reject("缺少参数evfs");
+			}else{
+				let transactionData = {};
+				transactionData.type = transactionDataTypeEnum.EVFSCONFIRMFILEUPLOAD;
+				transactionData.reqFileUploadData = args.evfs;
+				opts = getTransactionOpts(from, nonce, exdata, transactionData);
+			}
+		case transactionDataTypeEnum.EVFSAUTHORISEFILEOP:
+			/**
+			 * args = {"evfs":""}
+			 */
+			if (!args.fileHash || (!args.addAddrs || !args.removeAddrs)){
+				reject("缺少参数fileHash或 addAddrs 或 removeAddrs");
+			}else{
+				let transactionData = {};
+				transactionData.type = transactionDataTypeEnum.EVFSAUTHORISEFILEOP;
+				transactionData.authoriseFileOPData.fileHash = Buffer.from(args.fileHash, "hex");
+				if(args.addAddrs){
+					let addAddrs = [];
+					for(let j=0;j<args.addAddrs.length;j++){
+						addAddrs.push(Buffer.from(args.addAddrs[j],"hex"));
+					}
+					transactionData.authoriseFileOPData.addAddrs = addAddrs;
+				}
+				if(args.removeAddrs){
+					let removeAddrs = [];
+					for(let j=0;j<args.removeAddrs.length;j++){
+						removeAddrs.push(Buffer.from(args.removeAddrs[j],"hex"));
+					}
+					transactionData.authoriseFileOPData.removeAddrs = removeAddrs;
+				}
+				opts = getTransactionOpts(from, nonce, exdata, transactionData);
+			}
 		default:
 			/** 
 			 * args = [{"address":"","amount":100,"token":"CWV","tokenAmount":1000,"symbol":"house","cryptoToken":["hash0","hash1"]},{}]
@@ -225,8 +270,15 @@ var __sendTxTransaction = function (from, nonce, type, exdata, args) {
 			break;
 	}
 
-	let trans = new TransactionInfo(opts).genBody();
-	return sendRawTransaction.request(trans, opts);
+	return {
+		opts:opts,
+		trans:new TransactionInfo(opts).genBody()
+	};
+}
+var __sendTxTransaction = function (from, nonce, type, exdata, args) {
+	
+	let reuslt=__sign(from, nonce, type, exdata, args);
+	return sendRawTransaction.request(reuslt.trans, reuslt.opts);
 };
 
 
@@ -274,16 +326,23 @@ var getTransactionOpts = function (from, nonce, exdata, data, outputs) {
 	return opts;
 }
 var transactionDataTypeEnum = {
-	NONE: 0,
-	PUBLICCRYPTOTOKEN: 1,
+	NONE: 0,//普通交易
+	PUBLICCRYPTOTOKEN: 1,//发行crc72
 	OWNERTOKEN: 2,
-	USERTOKEN: 3,
-	PUBLICCONTRACT: 4,
-	CALLCONTRACT: 5,
-	CREATEUNIONACCOUNT: 6,
-	PUBLICUNIONACCOUNT: 7,
-	UNIONACCOUNTTRANSFER: 8,
-	UNIONACCOUNTCONFIRM: 9
+	USERTOKEN: 3, 
+	PUBLICCONTRACT: 4,//发行合约
+	CALLCONTRACT: 5,//调用合约		
+	EVFSREQFILEUPLOAD: 9,//文件上传申请
+	EVFSAUTHORISEFILEOP: 10,//文件访问授权
+	EVFSCONFIRMFILEUPLOAD: 11 //文件上传确认
+};
+/**
+ * crc20token opCode
+ */
+var ownerTokenOpCodeEnum = {
+	PUBLIC:0,
+	BURN:1,
+	MINT:2
 };
 var removePrefix = function(addr){
 	if(addr.startsWith('0x')){
@@ -321,6 +380,18 @@ export default {
 		return getStorageValue.request({"address":removePrefix(args), "key":[opts]}); 
 	},
 	/**
+	 * 获取交易类型
+	 */
+	getTransType:function(){
+		return transactionDataTypeEnum;
+	},
+	/**
+	 * crc20token 操作类型
+	 */
+	getOwnerTokenOpCodeEnum:function(){
+		return ownerTokenOpCodeEnum;
+	},
+	/**
 	 * 转账
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
@@ -329,13 +400,19 @@ export default {
 	 * 	args=[{"address":"","amount":100},{"address":"", "amount":20}]
 	 * 
 	 * 	transfer token
-	 * 	args=[{"address":"","token":"AAA","tokenAmount":1000},{"address":"","token":"AAA","tokenAmount":2000}]
+	 * 	args=[
+	 * 		{"address":"","token":"AAA","tokenAmount":1000},
+	 * 		{"address":"","token":"AAA","tokenAmount":2000}
+	 *	]
 	 * 
 	 * 	transfer crypto token
-	 * 	args=[{"address","symbol":"house","cryptoToken":["hash0","hash1"]},{"address","symbol":"house","cryptoToken":["hash2","hash3"]}]
+	 * 	args=[
+	 * 		{"address","symbol":"house","cryptoToken":["hash0","hash1"]},
+	 * 		{"address","symbol":"house","cryptoToken":["hash2","hash3"]}
+	 * 	]
 	 */
 	transfer: function (from, exdata, args) {
-		return __sendTxTransaction(from, from.keypair.nonce, 0, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.NONE, exdata, args);
 	},
 	/**
 	 * 创建合约
@@ -344,7 +421,7 @@ export default {
 	 * @param {*} args {"data":"", "amount":""}
 	 */
 	createContract: function (from, exdata, args) { 
-		return __sendTxTransaction(from, from.nonce, 4, exdata, args);
+		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.PUBLICCONTRACT, exdata, args);
 	},
 	/**
 	 * 调用合约
@@ -353,46 +430,61 @@ export default {
 	 * @param {*} args {"contract":"", "data":"", "amount":""}
 	 */
 	callContract: function (from, exdata, args) { 
-		return __sendTxTransaction(from, from.nonce, 5, exdata, args);
+		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.CALLCONTRACT, exdata, args);
 	},
 	/**
-	 * 发行ERC20 token
+	 * 发行CRC721 token
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
-	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000}
+	 * @param {*} args {"data":"", "amount":""}
+	 */
+	createCrypto:function(from,exdata,args){
+		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.PUBLICCRYPTOTOKEN, exdata, args);
+	},
+	/**
+	 * 发行CRC20 token
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} exdata 明文，方法里做ascii编码
+	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":0}
 	 */
 	publicToken: function (from, exdata, args) { 
 		args.opCode = 0;
-		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
+		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
 	 * 燃烧ERC20 token
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
-	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000}
+	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":1}
 	 */
 	burnToken: function (from, exdata, args) { 
 		args.opCode = 1;
-		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
+		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
 	 * 增发ERC20 token
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
-	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000}
+	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":2}
 	 */
 	mintToken: function (from, exdata, args) {
 		args.opCode = 2;
-		return __sendTxTransaction(from, from.nonce, 2, exdata, args);
+		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
-	 * 签名
-	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000}
+	 * 获取evfs上传文件交易签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} args {"evfs":object}
 	 */
-	sign:function(from,args){
-		let keypair = this.from.keypair;
-		var  ecdata = Buffer.from(TransactionBody.encode(txbody).finish());
-		var ecdataSign = keypair.ecHexSign(ecdata);
-		return Buffer.from(ecdataSign,"hex")
+	signEvfsFileUpload:function(from, exdata, args){
+		return __sign(from, from.nonce, transactionDataTypeEnum.EVFSREQFILEUPLOAD , exdata, args);
+	},
+	/**
+	 * 获取evfs文件授权交易签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} args {"fileHash":"","addAddrs":["",""]} || {"fileHash":"","removeAddrs":["",""]}
+	 */
+	signEvfsAuthFile:function(from, exdata, args){
+		return __sign(from, from.nonce, transactionDataTypeEnum.EVFSAUTHORISEFILEOP , exdata, args);
 	}
 }

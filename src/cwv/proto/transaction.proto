@@ -93,8 +93,15 @@ message PublicCryptoTokenData {
 	bytes symbol = 2;
 	repeated string name = 3;
 	repeated string code = 4;
-	repeated string prop = 5;
+	repeated PublicCryptoTokenDataProp prop = 5;
+	bytes toAddress = 6;
 }
+message PublicCryptoTokenDataProp {
+	repeated string key = 1;
+	repeated string value = 2;
+}
+
+
 message OwnerTokenData {
 	bytes token = 1;
 	bytes amount = 2;
