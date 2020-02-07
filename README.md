@@ -190,7 +190,7 @@ const cwv=require('@cwv/cwv.js');
 * create CRC721 token
 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 * @param {*} exdata Plaintext
-* @param {*} args {"data":"", "amount":""}
+* @param {*} args {"total":10, "symbol":"", "code":"","name":"",key:[],value:[]}
 */
 cwv.rpc.createCrypto(from,exdata,args).then(function(result){
     console.log(result)

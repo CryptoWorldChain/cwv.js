@@ -159,20 +159,30 @@ var __sign = function(from, nonce, type, exdata, args){
 			}
 			break;
 		case transactionDataTypeEnum.PUBLICCRYPTOTOKEN:
+			/**
+			 * args = {"total":10, "symbol":"", "code":"","name":"",key:[],value:[]}
+			 */
 			if (!args || !args.data) {
 				reject("缺少参数data");
 			} else {
 				let transactionData = {};
 				transactionData.type = transactionDataTypeEnum.PUBLICCRYPTOTOKEN;
 				transactionData.cryptoTokenData = {};
-				transactionData.cryptoTokenData.total = Buffer.from(args.data, "hex");
-				transactionData.cryptoTokenData.symbol = Buffer.from(args.data, "hex");
-				transactionData.cryptoTokenData.name = Buffer.from(args.data, "hex");
-				transactionData.cryptoTokenData.code = Buffer.from(args.data, "hex");
-				transactionData.cryptoTokenData.prop = {
-					key:[],value:[]
-				};
-				transactionData.cryptoTokenData.toAddress = Buffer.from(args.data, "hex");
+				transactionData.cryptoTokenData.total = args.total;
+				transactionData.cryptoTokenData.symbol = args.symbol;
+				transactionData.cryptoTokenData.name = args.name;
+				transactionData.cryptoTokenData.code = args.code;
+				transactionData.cryptoTokenData.prop = {}
+				if (Array.isArray(args.key)){
+					if (args.key.length>0){
+						transactionData.cryptoTokenData.prop.key=args.key
+					}
+				}
+				if (Array.isArray(args.value)){
+					if (args.value.length>0){
+						transactionData.cryptoTokenData.prop.value=args.value
+					}
+				}
 				
 				opts = getTransactionOpts(from, nonce, exdata, transactionData);
 			}
@@ -436,7 +446,7 @@ export default {
 	 * 发行CRC721 token
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
-	 * @param {*} args {"data":"", "amount":""}
+	 * @param {*} args {"total":10, "symbol":"", "code":"","name":"",key:[],value:[]}
 	 */
 	createCrypto:function(from,exdata,args){
 		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.PUBLICCRYPTOTOKEN, exdata, args);
