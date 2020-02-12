@@ -496,5 +496,17 @@ export default {
 	 */
 	signEvfsAuthFile:function(from, exdata, args){
 		return __sign(from, from.nonce, transactionDataTypeEnum.EVFSAUTHORISEFILEOP , exdata, args);
+	},
+	/**
+	 * 签名自定义参数
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}}
+	 * @param {*} args {data:object}
+	 */
+	signCustom:function(from,exdata,args){
+		let keypair = from.keypair;
+		var  ecdata = Buffer.from(args.data);
+		var ecdataSign = keypair.ecHexSign(ecdata);
+		
+		return Buffer.from(ecdataSign,"hex")
 	}
 }
