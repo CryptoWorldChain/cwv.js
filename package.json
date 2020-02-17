@@ -1,5 +1,5 @@
 {
-  "name": "cwv.js",
+  "name": "@cwv/cwv.js",
   "version": "1.4.0",
   "description": "CWV Chain JavaScript API & SDK",
   "scripts": {
