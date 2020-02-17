@@ -52,11 +52,11 @@ class PatternMethod extends Method {
 
 }
 
-var getBlockByNumber = PatternMethod._(_.template('{"height":"<%- args[0] %>"}'), "/bct/pbgbn.do");
+var getBlockByNumber = PatternMethod._(_.template('{"height":"<%- args[0] %>"}'), "bct","gbn");
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "gac");
 var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "bct", "glb");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gbh");
-var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gth");
+var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gbh");
 var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'), "act", "qcs");
 var sendRawTransaction = PatternMethod._(_.template('""'), "tct", "mtx");
 
