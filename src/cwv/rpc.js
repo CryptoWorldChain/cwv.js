@@ -54,9 +54,9 @@ class PatternMethod extends Method {
 
 var getBlockByNumber = PatternMethod._(_.template('{"height":"<%- args[0] %>"}'), "/bct/pbgbn.do");
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "gac");
-var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "glb");
+var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "bct", "glb");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gbh");
-var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "tct", "gth");
+var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gth");
 var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'), "act", "qcs");
 var sendRawTransaction = PatternMethod._(_.template('""'), "tct", "mtx");
 
@@ -370,8 +370,10 @@ export default {
 	getBalance: function (args, opts) { 
 		return getBalance.request({"address": removePrefix(args)}, opts); 
 	},
-	getBlockByNumber: function (args, opts) { return getBlockByNumber.request(args, opts); },
-	getBlockByHash: function (args, opts) { return getBlockByHash.request(args, opts); },
+	getBlockByNumber: function (args, opts) { 
+		return getBlockByNumber.request({"height":removePrefix(args)}, opts); 
+	},
+	getBlockByHash: function (args, opts) { return getBlockByHash.request({"hash":removePrefix(args)}, opts); },
 	getBlockByMax: function (args, opts) { return getBlockByMax.request(args, opts); },
 	/**
 	 * 查交易

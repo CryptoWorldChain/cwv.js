@@ -1,10 +1,11 @@
 {
-  "name": "@cwv/cwv.js",
+  "name": "cwv.js",
   "version": "1.4.0",
   "description": "CWV Chain JavaScript API & SDK",
   "scripts": {
     "test": "babel-node --presets env src/index.js",
     "build": "webpack --config webpack.config.js",
+    "browser": "webpack --config webpack.browser.config.js",
     "dev": "webpack-dev-server",
     "trans": "node dist/test.js"
   },
@@ -35,7 +36,7 @@
     "raw-loader": "^1.0.0",
     "terser-webpack-plugin": "^1.2.0",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
+    "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
@@ -52,5 +53,5 @@
     "sha2": "^1.0.2",
     "sha3": "^2.0.0"
   },
-  "main": "dist/cwv.js"
+  "main": "src/index.js"
 }
