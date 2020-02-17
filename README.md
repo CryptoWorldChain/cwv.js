@@ -225,6 +225,20 @@ cwv.rpc.signEvfsAuthFile(from, exdata, args).then(function(result){
 })
 ```
 
+signCustom
+
+```java
+const cwv=require('@cwv/cwv.js');
+/**
+* get evfs auth sign
+* @param {*} from {"keypair":{"address":"","privateKey":""}}
+* @param {*} args {data:object}
+*/
+cwv.rpc.signCustom(from, exdata, args).then(function(result){
+    console.log(result)
+})
+```
+
 
 
 ### License
