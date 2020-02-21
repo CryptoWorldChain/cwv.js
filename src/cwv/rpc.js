@@ -56,7 +56,7 @@ var getBlockByNumber = PatternMethod._(_.template('{"height":"<%- args[0] %>"}')
 var getBalance = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "gac");
 var getBlockByMax = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "bct", "glb");
 var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gbh");
-var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "bct", "gbh");
+var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "tct", "gth");
 var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'), "act", "qcs");
 var sendRawTransaction = PatternMethod._(_.template('""'), "tct", "mtx");
 
@@ -142,7 +142,7 @@ var __sign = function(from, nonce, type, exdata, args){
 			reject("key pair not set")
 		});
 	}
-
+	
 	var opts = {};
 	switch (type) {
 		case transactionDataTypeEnum.OWNERTOKEN:
@@ -279,16 +279,11 @@ var __sign = function(from, nonce, type, exdata, args){
 			opts = getTransactionOpts(from, nonce, exdata, null, outs);
 			break;
 	}
-
-	return {
-		opts:opts,
-		trans:new TransactionInfo(opts).genBody()
-	};
+	return new TransactionInfo(opts).genBody();
 }
 var __sendTxTransaction = function (from, nonce, type, exdata, args) {
-	
-	let reuslt=__sign(from, nonce, type, exdata, args);
-	return sendRawTransaction.request(reuslt.trans, reuslt.opts);
+	let result=__sign(from, nonce, type, exdata, args);
+	return sendRawTransaction.request(result);
 };
 
 
@@ -371,7 +366,7 @@ export default {
 		return getBalance.request({"address": removePrefix(args)}, opts); 
 	},
 	getBlockByNumber: function (args, opts) { 
-		return getBlockByNumber.request({"height":removePrefix(args)}, opts); 
+		return getBlockByNumber.request({"height":removePrefix(args),"type":1}, opts); 
 	},
 	getBlockByHash: function (args, opts) { return getBlockByHash.request({"hash":removePrefix(args)}, opts); },
 	getBlockByMax: function (args, opts) { return getBlockByMax.request(args, opts); },
@@ -433,7 +428,7 @@ export default {
 	 * @param {*} args {"data":"", "amount":""}
 	 */
 	createContract: function (from, exdata, args) { 
-		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.PUBLICCONTRACT, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.PUBLICCONTRACT, exdata, args);
 	},
 	/**
 	 * 调用合约
@@ -442,7 +437,7 @@ export default {
 	 * @param {*} args {"contract":"", "data":"", "amount":""}
 	 */
 	callContract: function (from, exdata, args) { 
-		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.CALLCONTRACT, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.CALLCONTRACT, exdata, args);
 	},
 	/**
 	 * 发行CRC721 token
@@ -461,7 +456,7 @@ export default {
 	 */
 	publicToken: function (from, exdata, args) { 
 		args.opCode = 0;
-		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
 	 * 燃烧ERC20 token
@@ -471,7 +466,7 @@ export default {
 	 */
 	burnToken: function (from, exdata, args) { 
 		args.opCode = 1;
-		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
 	 * 增发ERC20 token
@@ -481,7 +476,7 @@ export default {
 	 */
 	mintToken: function (from, exdata, args) {
 		args.opCode = 2;
-		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
+		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
 	 * 获取evfs上传文件交易签名
@@ -489,7 +484,7 @@ export default {
 	 * @param {*} args {"evfs":object}
 	 */
 	signEvfsFileUpload:function(from, exdata, args){
-		return __sign(from, from.nonce, transactionDataTypeEnum.EVFSREQFILEUPLOAD , exdata, args);
+		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.EVFSREQFILEUPLOAD , exdata, args);
 	},
 	/**
 	 * 获取evfs文件授权交易签名
@@ -497,7 +492,7 @@ export default {
 	 * @param {*} args {"fileHash":"","addAddrs":["",""]} || {"fileHash":"","removeAddrs":["",""]}
 	 */
 	signEvfsAuthFile:function(from, exdata, args){
-		return __sign(from, from.nonce, transactionDataTypeEnum.EVFSAUTHORISEFILEOP , exdata, args);
+		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.EVFSAUTHORISEFILEOP , exdata, args);
 	},
 	/**
 	 * 签名自定义参数

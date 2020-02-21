@@ -52,31 +52,22 @@ export default class TransactionInfo extends Transaction {
             txbody.exdata = Buffer.from(this.args.exdata, 'hex');
         }
 
-        if (this.args.outputs !== null)
-        {
+        if (this.args.outputs !== null){
             for(let i=0;i<this.args.outputs.length;i++) { 
                 txbody.outputs.push(proto.load("TransactionOutput").create(this.args.outputs[i]))
             }
         }
-            
-        // {
-        //     TransactionBody.create({
-        //         outputs:this.args.outputs
-        //     });
-        // }
-            // txbody.outputs = proto.load("TransactionOutput").create(this.args.outputs);
 
-
-
-        if(this.args.data !== null)
-        	txbody.data = proto.load("TransactionData").create(this.args.data);
+        if(this.args.data !== null){
+			txbody.data = proto.load("TransactionData").create(this.args.data);
+		}
 
         txbody.timestamp = new Date().getTime();
 
         var  ecdata = Buffer.from(TransactionBody.encode(txbody).finish());
         var ecdataSign = keypair.ecHexSign(ecdata);
 
-        let transactionInfo = proto.load("TransactionInfo");
+		let transactionInfo = proto.load("TransactionInfo");
         let tinfo = transactionInfo.create({
 			body:txbody,
 			signature:Buffer.from(ecdataSign,"hex")

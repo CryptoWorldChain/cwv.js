@@ -15,31 +15,14 @@ $ npm install @cwv/cwv.js
 Setting up the network,cwv support network has testnet and prodnet
 ```js
 const cwv=require('@cwv/cwv.js');
+var rp = require('request-promise')
 //set testnet network type
 cwv.config.server_base='http://ta30.icwv.co:38000/fbs';
 cwv.config.net_type='testnet'
 //set prodnet network type
 cwv.config.server_base='http://chain.cwv.one/block';
 cwv.config.net_type='prodnet'
-```
-
-Create keystore.json、keypair
-```js
-const cwv=require('@cwv/cwv.js');
-const fs=require('fs');
-var kp = cwv.KeyPair.genRandomKey();
-var json = keystore.exportJSON(kp,"000000");
-let fd = fs.openSync('keystore.json', 'w+');
-fs.writeSync(fd,JSON.stringify(json));
-console.log('keypair',kp);
-```
-
-Declare global variables
-
-```js
-var opts={
-    keypair:kp,from:'0x'+kp.hexAddress
-};
+cwv.config.rpc_provider = rp;
 ```
 
 Get balance and nonce
@@ -73,13 +56,27 @@ cwv.rpc.getBlockByMax().then(function(result){
 })
 ```
 
+Create keystore.json、keypair
+
+```java
+const cwv=require('@cwv/cwv.js');
+const fs=require('fs');
+var kp = cwv.KeyPair.genRandomKey();
+var json = keystore.exportJSON(kp,"000000");
+let fd = fs.openSync('keystore.json', 'w+');
+fs.writeSync(fd,JSON.stringify(json));
+console.log('keypair',kp);
+```
+
 Send transfer，support balance transfer，token transfer， crypto token transfer 。
 
 ```js
 const cwv=require('@cwv/cwv.js');
+var kp = cwv.KeyPair.genFromPrikey(
+  '89611e9ed751b2bb0f2a84d1b364bd6ef97a512a7ad0b1b50241168ff3add985')
 /**
 * transfer
-* @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+* @param {*} from {"keypair":{"address":"","privateKey":"",nonce:10}}
 * @param {*} exdata Plaintext
 * @param {*} args 
 * 	transfer balance
@@ -97,6 +94,9 @@ const cwv=require('@cwv/cwv.js');
 * 		{"address":"","symbol":"house","cryptoToken":["hash2","hash3"]}
 * 	]
 */
+kp.nonce=10;
+var from={keypair:kp};
+var args=[{"address":"066c03fcc3048863f72b051530e5a212fb9233f6","amount":1}]
 cwv.rpc.transfer(from,exdata,args).then(function(result){
     console.log(result)
 })
