@@ -500,10 +500,7 @@ export default {
 	 * @param {*} args {data:"16进制字符串"} 
 	 */
 	
-	signCustom:function(from,exdata,args){
-		let keypair = from.keypair;
-		var ecdataSign = keypair.ecHexSign(args.data);
-		
-		return Buffer.from(ecdataSign,"hex")
+	signCustom:function(from,exdata,args){		
+		return from.keypair.ecHexSign(args.data)
 	}
 }
