@@ -497,12 +497,12 @@ export default {
 	/**
 	 * 签名自定义参数
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}}
-	 * @param {*} args {data:object}
+	 * @param {*} args {data:"16进制字符串"} 
 	 */
+	
 	signCustom:function(from,exdata,args){
 		let keypair = from.keypair;
-		var  ecdata = Buffer.from(args.data);
-		var ecdataSign = keypair.ecHexSign(ecdata);
+		var ecdataSign = keypair.ecHexSign(args.data);
 		
 		return Buffer.from(ecdataSign,"hex")
 	}
