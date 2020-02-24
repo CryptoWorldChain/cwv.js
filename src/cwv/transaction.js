@@ -64,7 +64,9 @@ export default class TransactionInfo extends Transaction {
 
         txbody.timestamp = new Date().getTime();
 
-        var  ecdata = Buffer.from(TransactionBody.encode(txbody).finish());
+		var  ecdata = Buffer.from(TransactionBody.encode(txbody).finish());
+		console.log("decode===="+JSON.stringify(TransactionBody.decode(ecdata)))
+
         var ecdataSign = keypair.ecHexSign(ecdata);
 
 		let transactionInfo = proto.load("TransactionInfo");
@@ -73,7 +75,7 @@ export default class TransactionInfo extends Transaction {
 			signature:Buffer.from(ecdataSign,"hex")
         });
 
-        let tx = Buffer.from(transactionInfo.encode(tinfo).finish(),"hex").toString("hex");
+		let tx = Buffer.from(transactionInfo.encode(tinfo).finish(),"hex").toString("hex");
 		
         return {"tx":tx};
 	}

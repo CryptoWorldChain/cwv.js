@@ -5,6 +5,8 @@ import config from "./config.js"
 import TransactionInfo from "./transaction.js"
 import KeyPair from "./keypair";
 import BN from 'bn.js';
+import proto from './protos'
+
 
 class PatternMethod extends Method {
 	constructor(pattern, uri) {
@@ -167,6 +169,7 @@ var __sign = function(from, nonce, type, exdata, args){
 			} else {
 				let transactionData = {};
 				transactionData.type = transactionDataTypeEnum.PUBLICCRYPTOTOKEN;
+
 				transactionData.cryptoTokenData = {};
 				transactionData.cryptoTokenData.total = args.total;
 				transactionData.cryptoTokenData.symbol = args.symbol;
@@ -240,10 +243,14 @@ var __sign = function(from, nonce, type, exdata, args){
 				reject("缺少参数evfs");
 			}else{
 				let transactionData = {};
-				transactionData.type = transactionDataTypeEnum.EVFSCONFIRMFILEUPLOAD;
-				transactionData.reqFileUploadData = args.evfs;
+				transactionData.type = transactionDataTypeEnum.EVFSREQFILEUPLOAD;
+				let EVFSReqFileUploadData=proto.load("EVFSReqFileUploadData");
+				let jsonDecode=EVFSReqFileUploadData.decode(Buffer.from(args.evfs,'hex'));
+				transactionData.reqFileUploadData = jsonDecode;
+
 				opts = getTransactionOpts(from, nonce, exdata, transactionData);
 			}
+			break;
 		case transactionDataTypeEnum.EVFSAUTHORISEFILEOP:
 			/**
 			 * args = {"evfs":""}
@@ -270,6 +277,7 @@ var __sign = function(from, nonce, type, exdata, args){
 				}
 				opts = getTransactionOpts(from, nonce, exdata, transactionData);
 			}
+			break;
 		default:
 			/** 
 			 * args = [{"address":"","amount":100,"token":"CWV","tokenAmount":1000,"symbol":"house","cryptoToken":["hash0","hash1"]},{}]
@@ -481,7 +489,7 @@ export default {
 	/**
 	 * 获取evfs上传文件交易签名
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
-	 * @param {*} args {"evfs":object}
+	 * @param {*} args {"evfs":""}
 	 */
 	signEvfsFileUpload:function(from, exdata, args){
 		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.EVFSREQFILEUPLOAD , exdata, args);

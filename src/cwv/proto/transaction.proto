@@ -151,24 +151,23 @@ message EVFSReqFileUploadData{
 	bytes encFileInfo = 1;//使用randomKey des加密的fileInfo信息
 	bytes desKey = 2;//chainkey加密的randomKey，hexStringBytes
 	string CKVersion = 3;//chainkey 的version
-	bytes clientAddr = 4;//发起上传的前置节点地址
-	
-	message FileInfoData{
-		int32  	fileSize = 1;	//文件大小
-		string 	filename = 2;//文件名
-		string 	fileDesc = 3;//文件描述
-		string	domain = 4;//文件所属域
-		string	symbol721c = 5;// 721token的名称
-		int32	repeatCount = 6;//备份个数
-		int32 	sliceCount = 7;//分片数量
-		int64	totalVolumeCount = 8;//该文件一共有多少个721V
-		int64	storeDeadLine = 9;//存储时间限制
-		int64	onChainDeadLine=10;//上链时间限制
-		string	fileSign = 11;//文件内容MD5
-		bytes   exData = 12;//附加信息
-		repeated bytes nodeUrls = 13;//存储节点列表
-		bool    compress = 14;//是否开启压缩
-	}
+	bytes clientAddr = 4;//发起上传的前置节点地址	
+}
+message FileInfoData{
+	int32  	fileSize = 1;	//文件大小
+	string 	filename = 2;//文件名
+	string 	fileDesc = 3;//文件描述
+	string	domain = 4;//文件所属域
+	string	symbol721c = 5;// 721token的名称
+	int32	repeatCount = 6;//备份个数
+	int32 	sliceCount = 7;//分片数量
+	int64	totalVolumeCount = 8;//该文件一共有多少个721V
+	int64	storeDeadLine = 9;//存储时间限制
+	int64	onChainDeadLine=10;//上链时间限制
+	string	fileSign = 11;//文件内容MD5
+	bytes   exData = 12;//附加信息
+	repeated bytes nodeUrls = 13;//存储节点列表
+	bool    compress = 14;//是否开启压缩
 }
 
 message EVFSAuthoriseFileOPData{
