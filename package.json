@@ -1,6 +1,6 @@
 {
   "name": "@cwv/cwv.js",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "CWV Chain JavaScript API & SDK",
   "scripts": {
     "test": "babel-node --presets env src/index.js",
