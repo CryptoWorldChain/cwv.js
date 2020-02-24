@@ -203,11 +203,16 @@ const cwv=require('@cwv/cwv.js');
 /**
 * get evfs file upload sign
 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
-* @param {*} args {"evfs":Object}
+* @param {*} args {"evfs":""}
 */
-cwv.rpc.signEvfsFileUpload(from, exdata, args).then(function(result){
-    console.log(result)
-})
+
+
+var result=cwv.rpc.signEvfsFileUpload(from, exdata, args)
+
+Return structure
+{
+    tx:""
+}
 ```
 
 signEvfsAuthFile
@@ -220,9 +225,12 @@ const cwv=require('@cwv/cwv.js');
 * @param {*} args {"fileHash":"","addAddrs":["",""]}  //add auth list
 									{"fileHash":"","removeAddrs":["",""]} //remove auth list
 */
-cwv.rpc.signEvfsAuthFile(from, exdata, args).then(function(result){
-    console.log(result)
-})
+var result=cwv.rpc.signEvfsAuthFile(from, exdata, args)
+
+Return structure
+{
+    tx:""
+}
 ```
 
 signCustom
@@ -232,11 +240,9 @@ const cwv=require('@cwv/cwv.js');
 /**
 * get evfs auth sign
 * @param {*} from {"keypair":{"address":"","privateKey":""}}
-* @param {*} args {data:object}
+* @param {*} args {data:""}
 */
-cwv.rpc.signCustom(from, exdata, args).then(function(result){
-    console.log(result)
-})
+cwv.rpc.signCustom(from, exdata, args)
 ```
 
 
