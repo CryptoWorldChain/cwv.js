@@ -151,6 +151,7 @@ message EVFSReqFileUploadData{
 	bytes encFileInfo = 1;//使用randomKey des加密的fileInfo信息
 	bytes desKey = 2;//chainkey加密的randomKey，hexStringBytes
 	string CKVersion = 3;//chainkey 的version
+	bytes clientAddr = 4;//发起上传的前置节点地址
 	
 	message FileInfoData{
 		int32  	fileSize = 1;	//文件大小
