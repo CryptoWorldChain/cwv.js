@@ -255,11 +255,12 @@ var __sign = function(from, nonce, type, exdata, args){
 			/**
 			 * args = {"evfs":""}
 			 */
-			if (!args.fileHash || (!args.addAddrs || !args.removeAddrs)){
+			if (!args.fileHash){
 				reject("缺少参数fileHash或 addAddrs 或 removeAddrs");
 			}else{
 				let transactionData = {};
 				transactionData.type = transactionDataTypeEnum.EVFSAUTHORISEFILEOP;
+				transactionData.authoriseFileOPData={};
 				transactionData.authoriseFileOPData.fileHash = Buffer.from(args.fileHash, "hex");
 				if(args.addAddrs){
 					let addAddrs = [];
