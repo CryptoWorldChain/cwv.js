@@ -510,6 +510,24 @@ export default {
 	 */
 	
 	signCustom:function(from,exdata,args){		
+
 		return from.keypair.ecHexSign(args.data)
+	},
+	/**
+	 * 交易hash签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}}
+	 * @param {*} exdata 
+	 * @param {*} args {data:"交易hash"} 
+	 */
+	signTx:function(from,exdata,args){
+		var d=new Date().getTime();
+		var buf=new BN(d).toArrayLike(Buffer, d, 32);
+		console.log(buf.toString('hex'))
+		
+		return {
+			sign:from.keypair.ecHexSign(args.data+buf.toString('hex')),
+			timestamp:d,
+			tx:args.data
+		};
 	}
 }
