@@ -346,9 +346,9 @@ var transactionDataTypeEnum = {
 	USERTOKEN: 3, 
 	PUBLICCONTRACT: 4,//发行合约
 	CALLCONTRACT: 5,//调用合约		
-	EVFSREQFILEUPLOAD: 9,//文件上传申请
-	EVFSAUTHORISEFILEOP: 10,//文件访问授权
-	EVFSCONFIRMFILEUPLOAD: 11 //文件上传确认
+	EVFSREQFILEUPLOAD: 11,//文件上传申请
+	EVFSAUTHORISEFILEOP: 12,//文件访问授权
+	EVFSCONFIRMFILEUPLOAD: 13 //文件上传确认
 };
 /**
  * crc20token opCode

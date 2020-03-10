@@ -71,7 +71,13 @@ export default class TransactionInfo extends Transaction {
         let tinfo = transactionInfo.create({
 			body:txbody,
 			signature:Buffer.from(ecdataSign,"hex")
-        });
+		});
+		console.log("txbody==="+JSON.stringify(txbody))
+
+		console.log("tinfo==="+JSON.stringify(tinfo))
+
+		console.log("veriy==="+keypair.ecHexVerify(ecdata.toString('hex'),tinfo.signature.toString('hex')))
+		
 
 		let tx = Buffer.from(transactionInfo.encode(tinfo).finish(),"hex").toString("hex");
 		
