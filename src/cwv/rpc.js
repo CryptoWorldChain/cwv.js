@@ -340,15 +340,19 @@ var getTransactionOpts = function (from, nonce, exdata, data, outputs) {
 	return opts;
 }
 var transactionDataTypeEnum = {
-	NONE: 0,//普通交易
-	PUBLICCRYPTOTOKEN: 1,//发行crc72
-	OWNERTOKEN: 2,
-	USERTOKEN: 3, 
-	PUBLICCONTRACT: 4,//发行合约
-	CALLCONTRACT: 5,//调用合约		
-	EVFSREQFILEUPLOAD: 11,//文件上传申请
-	EVFSAUTHORISEFILEOP: 12,//文件访问授权
-	EVFSCONFIRMFILEUPLOAD: 13 //文件上传确认
+	NONE : 0,//普通交易
+	PUBLICCRYPTOTOKEN :1,//发行crc72
+	OWNERTOKEN : 2,
+	USERTOKEN : 3,
+	PUBLICCONTRACT : 4,//发行合约
+	CALLCONTRACT : 5,//调用合约
+	PUBLICUNIONACCOUNT : 6,
+	UNIONACCOUNTTRANSFER : 7,
+	UNIONACCOUNTCONFIRM : 8,
+	UNIONACCOUNTMANAGE : 12,
+	EVFSREQFILEUPLOAD : 9,//文件上传申请
+	EVFSAUTHORISEFILEOP : 10,//文件访问授权
+	EVFSCONFIRMFILEUPLOAD : 11//文件上传确认
 };
 /**
  * crc20token opCode
