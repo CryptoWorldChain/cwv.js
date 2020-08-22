@@ -6,6 +6,7 @@ import TransactionInfo from "./transaction.js"
 import KeyPair from "./keypair";
 import BN from 'bn.js';
 import proto from './protos'
+import util from 'util'
 
 
 class PatternMethod extends Method {
@@ -148,16 +149,17 @@ var __sign = function(from, nonce, type, exdata, args){
 	var opts = {};
 	switch (type) {
 		case transactionDataTypeEnum.OWNERTOKEN:
-			if (!args.token || !args.amount || isNullOrUndefined(args.opCode)) {
+			if (!args.token || !args.amount || util.isNullOrUndefined(args.opCode)) {
 				reject({ "msg": "缺少token 或 amount 或 opcode" });
 			} else {
-				transactionData.type = enums.OWNERTOKEN;
+				let transactionData={};
+				transactionData.type = transactionDataTypeEnum.OWNERTOKEN;
 
-				transactionData.OwnerTokenData = {};
-				transactionData.OwnerTokenData.token = Buffer.from(token, "ascii");
-				transactionData.OwnerTokenData.amount = new BN(amount).toArrayLike(Buffer);
-				transactionData.OwnerTokenData.opCode = opCode;
-				opts = getTransactionOpts(from, nonce, null, transactionData);
+				transactionData.ownerTokenData = {};
+				transactionData.ownerTokenData.token = Buffer.from(args.token, "ascii");
+				transactionData.ownerTokenData.amount = new BN(args.amount).toArrayLike(Buffer);
+				// transactionData.ownerTokenData.opCode = args.opCode;
+				opts = getTransactionOpts(from, nonce, exdata, transactionData);
 			}
 			break;
 		case transactionDataTypeEnum.PUBLICCRYPTOTOKEN:
