@@ -56,7 +56,7 @@ cwv.rpc.getBlockByMax().then(function(result){
 })
 ```
 
-Create keystore.json、keypair
+Create keystore.json、keypair
 
 ```java
 const cwv=require('@cwv/cwv.js');
