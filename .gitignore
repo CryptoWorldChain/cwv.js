@@ -2,3 +2,4 @@
 node_modules/
 dist/
 web3.js
+demo.js
