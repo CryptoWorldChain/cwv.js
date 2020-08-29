@@ -2,7 +2,7 @@ const cwv=require('./dist/cwv.js');
 const fs=require('fs');
 var rp = require('request-promise')
 //set testnet network type
-cwv.config.server_base='http://43.254.1.176:8000/fbs';
+cwv.config.server_base='http://c0:8000/fbs';
 cwv.config.rpc_provider = rp;
 
 // hexPrikey: '6ebe6cce22c9f5295617cb1fb7bb247d01c67693f94627b7989eec9585eb03d6',
