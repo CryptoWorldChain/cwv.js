@@ -2,7 +2,7 @@ const cwv=require('./dist/cwv.js');
 const fs=require('fs');
 var rp = require('request-promise')
 //set testnet network type
-cwv.config.server_base='http://c0:8000/fbs';
+cwv.config.server_base='http://ta30:8000/fbs';
 cwv.config.rpc_provider = rp;
 
 // hexPrikey: '6ebe6cce22c9f5295617cb1fb7bb247d01c67693f94627b7989eec9585eb03d6',
@@ -43,7 +43,7 @@ cwv.config.rpc_provider = rp;
 //     hexAddress: '6f0d4eb7a759ee5e2e1346a8e991b2254882f93c',
 
 // ************************1.transfer************************
-var kp = cwv.KeyPair.genFromPrikey('65eca7aefec9ecd8831efed1d07addab36a7e68ef1a9939e3afda1dc11c79eab')
+var kp = cwv.KeyPair.genFromPrikey('865d9b25aa0296d4c8cc0780eaa4b03cf8ecf43f5a1c3624b18f75d96c681839')
 kp.nonce=0;
 var from={
     keypair:kp
@@ -78,17 +78,17 @@ cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
     // cwv.rpc.createContract(from,null,args).then(function(result){
     //     console.log(result)
     // })
-
+    
     /**
     * callContract
     * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
     * @param {*} exdata Plaintext
     * @param {*} args {"contract":"", "data":"", "amount":""}
     */
-    // args={"contract":"325fd850be269c7945ea01d7b43c56e61f4ec371", "data":"9e1b004500000000000000000000000000000000000000000000025107f5b5aedf5c000000000000000000000000000000000000000000000000011e5a6cc0f4ecf41680", "amount":""}
-    // cwv.rpc.callContract(from,null,args).then(function(result){
-    //     console.log(result)
-    // })
+    args={"contract":"4ca9d8adb0612c8805aeed8bc490c4cf13e9cdd2", "data":"277de711", "amount":""}
+    cwv.rpc.callContract(from,null,args).then(function(result){
+        console.log(result)
+    })
 
     /**
     * create token
@@ -96,10 +96,10 @@ cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
     * @param {*} exdata Plaintext
     * @param {*} args {"token":"CETH", "amount":"10000000000000000000000000000","opCode":0}
     */
-    var args={"token":"METH", "amount":"10000000000000000000000000000","opCode":0}
-    cwv.rpc.publicToken(from, null, args).then(function(result){
-        console.log(result)
-    })
+    // var args={"token":"METH", "amount":"10000000000000000000000000000","opCode":0}
+    // cwv.rpc.publicToken(from, null, args).then(function(result){
+    //     console.log(result)
+    // })
 
 }).catch(function (err) {
     console.log(err)
