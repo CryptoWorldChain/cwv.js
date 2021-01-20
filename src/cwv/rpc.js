@@ -62,6 +62,7 @@ var getBlockByHash = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "b
 var getTransaction = PatternMethod._(_.template('{"hash":"<%- args[0] %>"}'), "tct", "gth");
 var getStorageValue = PatternMethod._(_.template('{"address":"<%- args[0] %>","key":["<%- args[1] %>"]}'), "act", "qcs");
 var sendRawTransaction = PatternMethod._(_.template('""'), "tct", "mtx");
+var getContractKey = PatternMethod._(_.template('{"address":"<%- args[0] %>"}'), "act", "qcs");
 
 // 		   getBlockTransactionCount,
 //         getBlockUncleCount,
@@ -437,6 +438,16 @@ export default {
 		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.NONE, exdata, args);
 	},
 	/**
+	 * 转账签名
+	 * @param {*} from 
+	 * @param {*} exdata 
+	 * @param {*} args 
+	 */
+	signTransfer : function (from, exdata, args) {
+		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.NONE, exdata, args)
+	},
+	
+	/**
 	 * 创建合约
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
@@ -444,6 +455,15 @@ export default {
 	 */
 	createContract: function (from, exdata, args) { 
 		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.PUBLICCONTRACT, exdata, args);
+	},
+	/**
+	 * 创建合约签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} exdata 明文，方法里做ascii编码
+	 * @param {*} args {"data":"", "amount":""}
+	 */
+	signCreateContract: function (from, exdata, args) { 
+		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.PUBLICCONTRACT, exdata, args);
 	},
 	/**
 	 * 调用合约
@@ -455,6 +475,15 @@ export default {
 		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.CALLCONTRACT, exdata, args);
 	},
 	/**
+	 * 调用合约签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} exdata 明文，方法里做ascii编码
+	 * @param {*} args {"contract":"", "data":"", "amount":""}
+	 */
+	signCallContract: function (from, exdata, args) { 
+		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.CALLCONTRACT, exdata, args);
+	},
+	/**
 	 * 发行CRC721 token
 	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 	 * @param {*} exdata 明文，方法里做ascii编码
@@ -462,6 +491,24 @@ export default {
 	 */
 	createCrypto:function(from,exdata,args){
 		return __sendTxTransaction(from, from.nonce, transactionDataTypeEnum.PUBLICCRYPTOTOKEN, exdata, args);
+	},
+	/**
+	 * 发行CRC721 token 签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} exdata 明文，方法里做ascii编码
+	 * @param {*} args {"total":10, "symbol":"", "code":"","name":"",key:[],value:[]}
+	 */
+	signCreateCrypto:function(from,exdata,args){
+		return __sign(from, from.nonce, transactionDataTypeEnum.PUBLICCRYPTOTOKEN, exdata, args);
+	},
+	/**
+	 * 发行CRC721 token 签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} exdata 明文，方法里做ascii编码
+	 * @param {*} args {"total":10, "symbol":"", "code":"","name":"",key:[],value:[]}
+	 */
+	signCreateCrypto:function(from,exdata,args){
+		return __sign(from, from.nonce, transactionDataTypeEnum.PUBLICCRYPTOTOKEN, exdata, args);
 	},
 	/**
 	 * 发行CRC20 token
@@ -472,6 +519,16 @@ export default {
 	publicToken: function (from, exdata, args) { 
 		args.opCode = 0;
 		return __sendTxTransaction(from, from.keypair.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
+	},
+	/**
+	 * 发行CRC20 token 签名
+	 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
+	 * @param {*} exdata 明文，方法里做ascii编码
+	 * @param {*} args {"token":"AAA", "amount":10000000000000000000000000000,"opCode":0}
+	 */
+	signPublicToken: function (from, exdata, args) { 
+		args.opCode = 0;
+		return __sign(from, from.keypair.nonce, transactionDataTypeEnum.OWNERTOKEN, exdata, args);
 	},
 	/**
 	 * 燃烧ERC20 token
@@ -516,7 +573,6 @@ export default {
 	 */
 	
 	signCustom:function(from,exdata,args){		
-
 		return from.keypair.ecHexSign(args.data)
 	},
 	/**

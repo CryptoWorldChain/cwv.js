@@ -4,6 +4,7 @@ var rp = require('request-promise')
 //set testnet network type
 cwv.config.server_base='http://ta30:8000/fbs';
 cwv.config.rpc_provider = rp;
+const web3=require("web3");
 
 // hexPrikey: '6ebe6cce22c9f5295617cb1fb7bb247d01c67693f94627b7989eec9585eb03d6',
 // hexPubkey: '720c607ccdf97da2c5eb2881bbc474eefdd68716d211126dfd1217f9dd6d8f8870d571d400a3f9362abcaae2040dc8ff75a095d4376c63784e7a2e519df9dd53',
@@ -49,12 +50,22 @@ var from={
     keypair:kp
 }
 console.log(from)
+
+// console.log(cwv.swap.byteCode("6080604052348","0xAAA","0xBBB",["0xf5b86060ed7c8ed4dde93291d5cdef1d915c0679"]))
+// console.log(cwv.swap.initPool("1000000000000000000000","2000000000000000000000"));
+// console.log(cwv.swap.swap("1000000000000000000000","2000000000000000000000"));
+// console.log(cwv.swap.liquidBalances("9165630e422dc884fb90b8707ad1212266621736"));
+
+console.log(cwv.swap.poolBalance0());
+
+//ed3c0d4e5c876992953da933bef36e9e7c6c570a
+
 cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
     console.log(result);
     result=JSON.parse(result);
     from.keypair.nonce=result.account.value.nonce;
-    // var args=[{"address":"409b32e6c475e4e7f644e27b35357406c24f15f3","amount":"10000000000000000000"}]
-    // // var extdata=Buffer.from('{"a":2,"b":"北京你好"}', 'utf8').toString('hex');
+    // var args=[{"address":"f5b86060ed7c8ed4dde93291d5cdef1d915c0679","amount":"10000000000000000000000"}]
+    // var extdata=Buffer.from('{"a":2,"b":"北京你好"}', 'utf8').toString('hex');
     // cwv.rpc.transfer(from,extdata,args).then(function(result){
     //     console.log(result)
     // })
@@ -71,13 +82,13 @@ cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
     //     console.log(result)
     // })
     
-    // var args={
-    //     "data":"",
-    //     "amount":""
-    // }
-    // cwv.rpc.createContract(from,null,args).then(function(result){
-    //     console.log(result)
-    // })
+    var args={
+        "data":"608060405234801561001057600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16600073ffffffffffffffffffffffffffffffffffffffff167f342827c97908e5e2f71151c08502a66d44b6f758e3ac2f1de95f02eb95f0a73560405160405180910390a36102c2806100dc6000396000f30060806040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063893d20e814610051578063a6f9dae1146100a8575b600080fd5b34801561005d57600080fd5b506100666100eb565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156100b457600080fd5b506100e9600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610114565b005b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905090565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161415156101d8576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825260138152602001807f43616c6c6572206973206e6f74206f776e65720000000000000000000000000081525060200191505060405180910390fd5b8073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f342827c97908e5e2f71151c08502a66d44b6f758e3ac2f1de95f02eb95f0a73560405160405180910390a3806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505600a165627a7a72305820f7ad18bdc1b60f91ee9867fc0980065db403ccbfa09aa1c503c4a04eccf641d00029",
+        "amount":""
+    }
+    cwv.rpc.createContract(from,null,args).then(function(result){
+        console.log(result)
+    })
     
     /**
     * callContract
@@ -85,10 +96,10 @@ cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
     * @param {*} exdata Plaintext
     * @param {*} args {"contract":"", "data":"", "amount":""}
     */
-    args={"contract":"4ca9d8adb0612c8805aeed8bc490c4cf13e9cdd2", "data":"277de711", "amount":""}
-    cwv.rpc.callContract(from,null,args).then(function(result){
-        console.log(result)
-    })
+    // args={"contract":"4ca9d8adb0612c8805aeed8bc490c4cf13e9cdd2", "data":"277de711", "amount":""}
+    // cwv.rpc.callContract(from,null,args).then(function(result){
+    //     console.log(result)
+    // })
 
     /**
     * create token
@@ -96,10 +107,12 @@ cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
     * @param {*} exdata Plaintext
     * @param {*} args {"token":"CETH", "amount":"10000000000000000000000000000","opCode":0}
     */
-    // var args={"token":"METH", "amount":"10000000000000000000000000000","opCode":0}
+    // var args={"token":"MMMDDD", "amount":"10000000000000000000000000000","opCode":0}
     // cwv.rpc.publicToken(from, null, args).then(function(result){
     //     console.log(result)
     // })
+
+    //58273c822a8b10817ee73426a1fe3f69ef4c2be8
 
 }).catch(function (err) {
     console.log(err)
@@ -143,6 +156,7 @@ cwv.rpc.getBalance(from.keypair.hexAddress).then(function(result){
 
 
 
+console.log(BigInt("0x33b2e3c9fd0803ce8000000"))
 
 
 // 0000000000000000000000000000004345544820

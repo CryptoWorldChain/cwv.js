@@ -100,6 +100,8 @@ var args=[{"address":"066c03fcc3048863f72b051530e5a212fb9233f6","amount":1}]
 cwv.rpc.transfer(from,exdata,args).then(function(result){
     console.log(result)
 })
+//transfer sign
+cwv.rpc.signTransfer(from,exdata,args)
 ```
 
 Get transaction information through transaction hash
@@ -122,6 +124,8 @@ const cwv=require('@cwv/cwv.js');
 cwv.rpc.publicToken(from, exdata, args).then(function(result){
     console.log(result)
 })
+//create token sign
+cwv.rpc.signPublicToken(from, exdata, args)
 ```
 Burn a token transaction
 
@@ -136,6 +140,8 @@ const cwv=require('@cwv/cwv.js');
 cwv.rpc.burnToken(from,exdata,args).then(function(result){
     console.log(result)
 })
+// burn token sign
+cwv.rpc.signBurnToken(from,exdata,args)
 ```
 
 Additional a token transaction
@@ -151,6 +157,8 @@ const cwv=require('@cwv/cwv.js');
 cwv.rpc.mintToken(from,exdata,args).then(function(result){
     console.log(result)
 })
+// Additional token sign
+cwv.rpc.signMintToken(from,exdata,args)
 ```
 
 Create contract
@@ -166,6 +174,8 @@ const cwv=require('@cwv/cwv.js');
 cwv.rpc.createContract(from,exdata,args).then(function(result){
     console.log(result)
 })
+// createContract sign
+cwv.rpc.signCreateContract(from,exdata,args);
 ```
 
 Call contract
@@ -181,6 +191,8 @@ const cwv=require('@cwv/cwv.js');
 cwv.rpc.callContract(from,exdata,args).then(function(result){
     console.log(result)
 })
+//callContract sign
+cwv.rpc.signCallContract(from,exdata,args);
 ```
 
 Create crc721 token transaction
@@ -195,6 +207,8 @@ const cwv=require('@cwv/cwv.js');
 cwv.rpc.createCrypto(from,exdata,args).then(function(result){
     console.log(result)
 })
+//create CRC721 token sign
+cwv.rpc.signCreateCrypto(from,exdata,args);
 ```
 signEvfsFileUpload sign
 
@@ -205,7 +219,6 @@ const cwv=require('@cwv/cwv.js');
 * @param {*} from {"keypair":{"address":"","privateKey":""}, "nonce": 0}
 * @param {*} args {"evfs":""}
 */
-
 
 var result=cwv.rpc.signEvfsFileUpload(from, exdata, args)
 

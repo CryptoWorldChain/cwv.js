@@ -4,17 +4,14 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 
 const path = require('path');
-// console.log("path=="+path+"===>"+path.resolve(__dirname, "keystore"))
 module.exports = {
-	mode: "development",
-  	entry: './src/index.js',
+	mode: "production",
+  	entry: './src/browser.js',
 	optimization: {
 	    //minimizer: [
 	    //  new TerserPlugin({ /* your config */ })
 	    // ]
 	},
-	devtool: 'inline-source-map',
-
 	devServer: {
 	    contentBase: path.join(__dirname, 'dist'),
 	    compress: true,
@@ -43,7 +40,7 @@ module.exports = {
 	       	loader: 'raw-loader',
 	       	include:[path.resolve(__dirname, "src/cwv/proto")],
 	      },
-	      
+
 	    ],
 	 },
 	resolve: {//import的时候不需要加上js
@@ -53,19 +50,20 @@ module.exports = {
    		 }
   	},
   	output: {
-    	filename: 'cwv.js',
+    	filename: 'cwv-browser.js',
     	path: path.resolve(__dirname, 'dist'),
     	library:'cwv',
-    	libraryTarget:'commonjs2',
-    	libraryExport:'default'
+
+    	// libraryTarget:'commonjs2',
+    	// libraryExport:'default'
   	},
   	node: {
-		console: 'mock',
-		fs: 'empty',
-		net: 'empty',
-		tls: 'empty'
-	},
-	
+		    console: 'mock',
+		    fs: 'empty',
+		    net: 'empty',
+		    tls: 'empty'
+		},
+
 
   	plugins: [new HtmlWebpackPlugin(),
 
